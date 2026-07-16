@@ -1,0 +1,1237 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AirAura 2025 — Design Portfolio</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap');
+
+  :root{
+    --bg:#08050f;
+    --purple:#4a1a80;
+    --violet:#a855f7;
+    --magenta:#ff6ec7;
+    --gold:#ffd166;
+    --ink:#d8c8f0;
+    --muted:#8a76ad;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+
+  body{
+    background: linear-gradient(160deg, #0d0520 0%, #08050f 40%, #120830 70%, #0a0418 100%);
+    color:#fff;
+    font-family:'Rajdhani',sans-serif;
+    overflow-x:hidden;
+    cursor:default;
+  }
+
+  ::selection{background:var(--violet);color:#fff;}
+
+  /* ---------- starfield canvas ---------- */
+  #stars{position:fixed;inset:0;z-index:0;pointer-events:none;}
+
+  /* ---------- scan progress line ---------- */
+  #scan{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--violet),var(--magenta),var(--gold));z-index:100;box-shadow:0 0 12px var(--magenta);transition:width .1s linear;}
+
+  /* ---------- side radar nav ---------- */
+  #radar-nav{position:fixed;right:26px;top:50%;transform:translateY(-50%);z-index:90;display:flex;flex-direction:column;gap:16px;}
+  .radar-dot{width:9px;height:9px;border-radius:50%;background:rgba(168,85,247,.3);border:1px solid rgba(168,85,247,.6);cursor:pointer;position:relative;transition:all .3s ease;}
+  .radar-dot.active{background:var(--magenta);box-shadow:0 0 14px var(--magenta);transform:scale(1.4);}
+  .radar-dot::after{content:attr(data-label);position:absolute;right:22px;top:50%;transform:translateY(-50%);white-space:nowrap;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);opacity:0;transition:opacity .25s ease;pointer-events:none;}
+  .radar-dot:hover::after{opacity:1;}
+
+  @media (max-width:900px){ #radar-nav{display:none;} }
+
+  /* ---------- layout shell ---------- */
+  .wrap{position:relative;z-index:1;max-width:1280px;margin:0 auto;padding:0 60px;}
+  @media (max-width:800px){ .wrap{padding:0 24px;} }
+
+  section{position:relative;padding:140px 0;}
+
+  /* ---------- hero ---------- */
+  .hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding-top:80px;}
+  .hero-badges{display:flex;gap:14px;margin-bottom:38px;opacity:0;animation:fadeUp .9s .2s forwards;}
+  .badge{border:1px solid rgba(168,85,247,.45);background:rgba(168,85,247,.1);border-radius:40px;padding:8px 20px;font-size:12px;letter-spacing:3px;text-transform:uppercase;color:#d9b8ff;}
+  .hero-title{font-family:'Orbitron',monospace;font-weight:900;font-size:clamp(64px,11vw,160px);line-height:.95;letter-spacing:-2px;background:linear-gradient(135deg,#fff 0%,#dcb4ff 35%,#a855f7 70%,#6b21c9 100%);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;opacity:0;animation:fadeUp 1s .35s forwards, textGradient 8s ease infinite alternate;}
+  @keyframes textGradient{0%{background-position:0% 50%;}100%{background-position:100% 50%;}}
+  .hero-year{font-family:'Rajdhani',sans-serif;font-style:italic;font-weight:600;font-size:clamp(30px,4vw,48px);color:var(--magenta);margin-top:6px;opacity:0;animation:fadeUp 1s .5s forwards;}
+  .hero-tag{margin-top:26px;font-size:15px;letter-spacing:5px;text-transform:uppercase;color:var(--ink);opacity:0;animation:fadeUp 1s .65s forwards;}
+  .hero-desc{max-width:640px;margin-top:30px;font-size:18px;line-height:1.7;color:var(--ink);opacity:0;animation:fadeUp 1s .8s forwards;}
+  .hero-desc b{color:#fff;}
+  .scroll-cue{position:absolute;bottom:46px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;opacity:0;animation:fadeUp 1s 1.2s forwards;}
+  .scroll-cue span{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);}
+  .scroll-line{width:1px;height:40px;background:linear-gradient(var(--violet),transparent);animation:scrollpulse 1.8s ease-in-out infinite;}
+
+  @keyframes fadeUp{from{opacity:0;transform:translateY(26px);}to{opacity:1;transform:translateY(0);}}
+  @keyframes scrollpulse{0%{transform:scaleY(0);transform-origin:top;}50%{transform:scaleY(1);transform-origin:top;}51%{transform-origin:bottom;}100%{transform:scaleY(0);transform-origin:bottom;}}
+
+  /* stat row */
+  .stat-row{display:flex;gap:64px;margin-top:56px;flex-wrap:wrap;justify-content:center;opacity:0;animation:fadeUp 1s 1s forwards;}
+  .stat{text-align:center;}
+  .stat-num{font-family:'Orbitron',monospace;font-weight:700;font-size:34px;color:var(--gold);}
+  .stat-label{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-top:4px;}
+
+  /* ---------- reveal utility ---------- */
+  .reveal{opacity:0;transform:translateY(40px);transition:opacity 1s cubic-bezier(0.16, 1, 0.3, 1),transform 1s cubic-bezier(0.16, 1, 0.3, 1);}
+  .reveal.in{opacity:1;transform:translateY(0);}
+  .reveal-l{opacity:0;transform:translateX(-40px);transition:opacity 1s cubic-bezier(0.16, 1, 0.3, 1),transform 1s cubic-bezier(0.16, 1, 0.3, 1);}
+  .reveal-l.in{opacity:1;transform:translateX(0);}
+  .reveal-r{opacity:0;transform:translateX(40px);transition:opacity 1s cubic-bezier(0.16, 1, 0.3, 1),transform 1s cubic-bezier(0.16, 1, 0.3, 1);}
+  .reveal-r.in{opacity:1;transform:translateX(0);}
+
+  /* ---------- section heading ---------- */
+  .eyebrow{display:flex;align-items:center;gap:16px;margin-bottom:18px;}
+  .eyebrow-num{font-family:'Orbitron',monospace;font-size:12px;letter-spacing:4px;color:var(--magenta);font-weight:700;}
+  .eyebrow-line{flex:1;height:1px;background:linear-gradient(90deg,rgba(168,85,247,.5),transparent);}
+  h2.title{font-family:'Orbitron',monospace;font-weight:900;font-size:clamp(30px,4vw,46px);margin-bottom:10px;}
+  .subtitle{font-size:17px;color:var(--muted);max-width:600px;margin-bottom:8px;}
+
+  /* ---------- brief cards ---------- */
+  .brief-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-top:44px;}
+  @media (max-width:800px){.brief-grid{grid-template-columns:repeat(2,1fr);}}
+  .brief-card{background:linear-gradient(150deg,rgba(168,85,247,.1),rgba(168,85,247,.02));border:1px solid rgba(168,85,247,.25);border-radius:16px;padding:30px 24px;transition:transform .4s ease,border-color .4s ease,background .4s ease;}
+  .brief-card:hover{transform:translateY(-8px);border-color:var(--magenta);background:linear-gradient(150deg,rgba(255,110,199,.14),rgba(168,85,247,.04));}
+  .brief-num{font-family:'Orbitron',monospace;font-size:38px;font-weight:900;color:#fff;}
+  .brief-label{font-size:14px;color:var(--ink);margin-top:6px;}
+
+  /* ---------- gallery frame (the hover-tilt design cards) ---------- */
+  .frame{position:relative;border-radius:18px;overflow:hidden;border:1px solid rgba(168,85,247,.3);box-shadow:0 30px 70px rgba(70,0,140,.4);transform-style:preserve-3d;transition:transform .6s cubic-bezier(.2,.8,.2,1), box-shadow .4s ease, opacity .7s ease;cursor:pointer;opacity:0;transform:perspective(900px) rotateX(18deg) rotateY(-8deg) translateY(60px) scale(0.93);}
+  .frame.frame-revealed{opacity:1;transform:perspective(900px) rotateX(0deg) rotateY(0deg) translateY(0px) scale(1);}
+  .frame img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .6s ease,filter .5s ease;}
+  .frame:hover img{transform:scale(1.06);}
+  .frame .glare{position:absolute;inset:0;background:radial-gradient(circle at var(--mx,50%) var(--my,50%),rgba(255,255,255,.16),transparent 45%);opacity:0;transition:opacity .3s ease;pointer-events:none;}
+  .frame:hover .glare{opacity:1;}
+  .frame .frame-caption{position:absolute;left:0;right:0;bottom:0;padding:22px 24px;background:linear-gradient(to top,rgba(6,3,14,.92),transparent);transform:translateY(12px);opacity:0;transition:all .35s ease;}
+  .frame:hover .frame-caption{transform:translateY(0);opacity:1;}
+  .frame-caption b{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:17px;display:block;}
+  .frame-caption span{font-size:13px;color:var(--muted);}
+
+  /* duo / trio grids */
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:30px;margin-top:44px;}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;margin-top:44px;}
+  @media (max-width:800px){.grid2,.grid3{grid-template-columns:1fr;}}
+
+  .single-frame{margin-top:44px;}
+
+  /* wide stack for brochure panels */
+  .stack{display:flex;flex-direction:column;gap:30px;margin-top:44px;}
+
+  /* palette */
+  .palette-row{display:flex;gap:16px;margin-top:40px;flex-wrap:wrap;}
+  .swatch{width:150px;transition:transform .3s ease;}
+  .swatch:hover{transform:translateY(-6px);}
+  .swatch-color{height:110px;border-radius:12px 12px 0 0;border:1px solid rgba(255,255,255,.12);}
+  .swatch-info{background:rgba(255,255,255,.04);border:1px solid rgba(168,85,247,.2);border-top:none;border-radius:0 0 12px 12px;padding:10px 12px;}
+  .swatch-hex{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:14px;}
+  .swatch-name{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-top:2px;}
+
+  /* type system */
+  .type-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:44px;}
+  @media (max-width:800px){.type-grid{grid-template-columns:1fr;}}
+  .type-card{background:rgba(168,85,247,.06);border:1px solid rgba(168,85,247,.2);border-radius:16px;padding:30px;transition:border-color .3s ease;}
+  .type-card:hover{border-color:var(--magenta);}
+  .type-card-label{font-size:12px;letter-spacing:3px;color:var(--magenta);text-transform:uppercase;margin-bottom:16px;}
+  .type-sample-orb{font-family:'Orbitron',monospace;font-size:32px;}
+  .type-sample-raj{font-family:'Rajdhani',sans-serif;font-weight:600;font-size:32px;}
+  .type-desc{font-size:13px;color:var(--muted);margin-top:16px;line-height:1.5;}
+
+  /* footer */
+  footer{padding:120px 0 80px;text-align:center;position:relative;}
+  .footer-title{font-family:'Orbitron',monospace;font-weight:900;font-size:clamp(36px,6vw,64px);background:linear-gradient(135deg,#fff,#dcb4ff,#a855f7,#fff);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:textGradient 6s ease infinite alternate;}
+  .footer-text{max-width:520px;margin:18px auto 30px;color:var(--ink);font-size:16px;line-height:1.6;}
+  .footer-credit{font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-top:30px;}
+
+  /* lightbox */
+  #lightbox{position:fixed;inset:0;background:rgba(4,2,10,.92);backdrop-filter:blur(6px);z-index:200;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s ease;}
+  #lightbox.open{opacity:1;pointer-events:auto;}
+  #lightbox img{max-width:88vw;max-height:86vh;border-radius:12px;box-shadow:0 40px 100px rgba(0,0,0,.6);transform:scale(.94);transition:transform .3s ease;}
+  #lightbox.open img{transform:scale(1);}
+  #lightbox-close{position:absolute;top:30px;right:40px;font-family:'Rajdhani',sans-serif;font-size:14px;letter-spacing:2px;color:#fff;border:1px solid rgba(255,255,255,.3);padding:8px 18px;border-radius:30px;cursor:pointer;background:transparent;}
+  #lightbox-close:hover{border-color:var(--magenta);color:var(--magenta);}
+
+  
+
+  /* ===== HERO PARALLAX TEXT ===== */
+  .hero-title{will-change:transform;}
+  .hero-year{will-change:transform;}
+
+  /* ===== TYPEWRITER on hero-tag ===== */
+  .hero-tag .tw-text{border-right:2px solid var(--magenta);white-space:nowrap;overflow:hidden;display:inline-block;animation:fadeUp 1s .65s forwards;}
+  @keyframes blink{0%,100%{border-color:var(--magenta);}50%{border-color:transparent;}}
+  .hero-tag .tw-cursor{animation:blink .8s ease-in-out infinite;margin-left:2px;}
+
+  /* ===== MAGNETIC BADGES ===== */
+  .badge{transition:transform .3s cubic-bezier(.2,.8,.2,1),background .3s ease,border-color .3s ease,box-shadow .3s ease;display:inline-block;}
+  .badge:hover{background:rgba(168,85,247,.22);border-color:var(--magenta);box-shadow:0 0 18px rgba(255,110,199,.35),0 0 40px rgba(168,85,247,.15);}
+
+  /* ===== SECTION GLOW LINES ===== */
+  .eyebrow-line{background:linear-gradient(90deg,var(--magenta),rgba(168,85,247,.5),transparent);transition:opacity .6s ease;}
+
+  /* ===== BRIEF CARD GLOW ===== */
+  .brief-card{position:relative;overflow:hidden;}
+  .brief-card::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at var(--cx,50%) var(--cy,50%),rgba(255,110,199,.08),transparent 60%);opacity:0;transition:opacity .3s ease;pointer-events:none;}
+  .brief-card:hover::before{opacity:1;}
+
+  /* ===== SCROLL PROGRESS RING ===== */
+  #progress-ring{position:fixed;bottom:28px;right:28px;z-index:90;width:48px;height:48px;pointer-events:none;}
+  #progress-ring circle{fill:none;stroke-width:3;}
+  #progress-ring .track{stroke:rgba(168,85,247,.15);}
+  #progress-ring .fill{stroke:var(--magenta);stroke-dasharray:132;stroke-dashoffset:132;stroke-linecap:round;transform:rotate(-90deg);transform-origin:center;transition:stroke-dashoffset .1s linear;filter:drop-shadow(0 0 4px var(--magenta));}
+
+  /* ===== SECTION ENTRY FLASH ===== */
+  .eyebrow.in .eyebrow-num{animation:numFlash .5s ease;}
+  @keyframes numFlash{0%{color:var(--gold);text-shadow:0 0 20px var(--gold);}100%{color:var(--magenta);text-shadow:none;}}
+
+  /* ===== RIPPLE on click ===== */
+  .ripple{position:fixed;border-radius:50%;background:radial-gradient(circle,rgba(168,85,247,.35),transparent 70%);pointer-events:none;z-index:9997;transform:translate(-50%,-50%) scale(0);animation:rippleOut .6s ease-out forwards;}
+  @keyframes rippleOut{to{transform:translate(-50%,-50%) scale(1);opacity:0;width:160px;height:160px;}}
+.single-frame .frame{min-height:220px;}
+  }
+
+  /* ===== CONTACT SECTION ===== */
+  #contact{position:relative;padding:140px 0 100px;}
+
+  .contact-intro{max-width:580px;margin:0 auto 70px;text-align:center;}
+  .contact-intro .subtitle{font-size:17px;line-height:1.7;}
+
+  /* availability badge */
+  .avail-badge{
+    display:inline-flex;align-items:center;gap:10px;
+    border:1px solid rgba(100,255,160,.35);background:rgba(100,255,160,.07);
+    border-radius:40px;padding:8px 22px;margin-bottom:28px;
+    font-size:12px;letter-spacing:3px;text-transform:uppercase;color:#6effa8;
+    animation:fadeUp .8s .2s both;
+  }
+  .avail-dot{width:8px;height:8px;border-radius:50%;background:#6effa8;
+    box-shadow:0 0 10px #6effa8;animation:pulse 1.8s ease-in-out infinite;}
+  @keyframes pulse{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.5);opacity:.5;}}
+
+  /* contact cards grid */
+  .contact-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+    gap:24px;
+    margin-bottom:56px;
+  }
+
+  .c-card{
+    background:linear-gradient(145deg,rgba(168,85,247,.08),rgba(74,26,128,.06));
+    border:1px solid rgba(168,85,247,.22);
+    border-radius:22px;padding:36px 30px;
+    display:flex;flex-direction:column;align-items:flex-start;gap:14px;
+    transition:transform .35s cubic-bezier(.2,.8,.2,1),
+               border-color .3s ease,box-shadow .35s ease;
+    text-decoration:none;color:inherit;position:relative;overflow:hidden;
+  }
+  .c-card::before{
+    content:'';position:absolute;inset:0;
+    background:radial-gradient(circle at var(--cx,50%) var(--cy,50%),rgba(255,110,199,.09),transparent 55%);
+    opacity:0;transition:opacity .3s ease;pointer-events:none;
+  }
+  .c-card:hover::before{opacity:1;}
+  .c-card:hover{
+    transform:translateY(-6px) scale(1.02);
+    border-color:rgba(255,110,199,.45);
+    box-shadow:0 24px 60px rgba(168,85,247,.25),0 0 30px rgba(255,110,199,.1);
+  }
+  .c-card-icon{
+    width:52px;height:52px;border-radius:16px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:22px;
+    background:linear-gradient(135deg,rgba(168,85,247,.2),rgba(255,110,199,.15));
+    border:1px solid rgba(168,85,247,.3);
+    flex-shrink:0;
+    transition:transform .3s ease;
+  }
+  .c-card:hover .c-card-icon{transform:scale(1.1) rotate(-4deg);}
+  .c-card-label{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:2px;}
+  .c-card-value{font-family:'Rajdhani',sans-serif;font-weight:600;font-size:17px;color:#fff;word-break:break-all;line-height:1.3;}
+  .c-card-arrow{
+    position:absolute;top:22px;right:22px;
+    font-size:16px;color:rgba(168,85,247,.4);
+    transition:color .3s ease,transform .3s ease;
+  }
+  .c-card:hover .c-card-arrow{color:var(--magenta);transform:translate(3px,-3px);}
+
+  /* LinkedIn card special */
+  .c-card.c-linkedin:hover{
+    border-color:rgba(10,102,194,.6);
+    box-shadow:0 24px 60px rgba(10,102,194,.2),0 0 30px rgba(10,102,194,.1);
+  }
+  .c-card.c-linkedin .c-card-icon{
+    background:linear-gradient(135deg,rgba(10,102,194,.25),rgba(10,102,194,.1));
+    border-color:rgba(10,102,194,.3);
+  }
+
+  /* CTA button */
+  .contact-cta-row{display:flex;justify-content:center;gap:18px;flex-wrap:wrap;}
+  .cta-btn{
+    display:inline-flex;align-items:center;gap:10px;
+    padding:16px 36px;border-radius:50px;
+    font-family:'Orbitron',monospace;font-weight:700;
+    font-size:12px;letter-spacing:3px;text-transform:uppercase;
+    text-decoration:none;transition:all .35s ease;position:relative;overflow:hidden;
+  }
+  .cta-btn-primary{
+    background:linear-gradient(135deg,#7c3aed,#a855f7,#c084fc);
+    color:#fff;border:none;
+    box-shadow:0 10px 40px rgba(168,85,247,.35);
+  }
+  .cta-btn-primary:hover{
+    transform:translateY(-3px);
+    box-shadow:0 18px 50px rgba(168,85,247,.55);
+  }
+  .cta-btn-primary::after{
+    content:'';position:absolute;inset:0;
+    background:linear-gradient(135deg,transparent,rgba(255,255,255,.18),transparent);
+    transform:translateX(-100%);transition:transform .5s ease;
+  }
+  .cta-btn-primary:hover::after{transform:translateX(100%);}
+
+  .cta-btn-outline{
+    background:transparent;
+    border:1px solid rgba(168,85,247,.45);
+    color:var(--ink);
+  }
+  .cta-btn-outline:hover{
+    border-color:var(--magenta);color:#fff;
+    background:rgba(255,110,199,.08);
+    transform:translateY(-3px);
+    box-shadow:0 10px 30px rgba(255,110,199,.2);
+  }
+
+  /* designer name in footer */
+  .contact-designer-name{
+    text-align:center;margin-top:60px;
+    font-family:'Orbitron',monospace;font-weight:900;
+    font-size:clamp(28px,5vw,54px);
+    background:linear-gradient(135deg,#fff 0%,#dcb4ff 35%,#a855f7 70%,#6b21c9 100%);
+    background-size:200% auto;
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+    letter-spacing:2px;
+    opacity:0;animation:fadeUp 1s .2s both, textGradient 8s ease infinite alternate;
+  }
+  .contact-tagline{
+    text-align:center;font-size:13px;letter-spacing:4px;
+    text-transform:uppercase;color:var(--muted);margin-top:10px;
+  }
+
+  @media(max-width:700px){
+    .contact-grid{grid-template-columns:1fr;}
+    .cta-btn{padding:14px 26px;font-size:11px;}
+    #contact{padding:80px 0 60px;}
+  }
+
+  /* ====== DESIGN PROCESS STRIP ====== */
+  .process-strip{
+    display:flex;align-items:center;justify-content:center;
+    gap:0;margin:0 0 80px;flex-wrap:wrap;
+    opacity:0;animation:fadeUp .8s .3s both;
+  }
+  .process-step{
+    display:flex;flex-direction:column;align-items:center;gap:10px;
+    padding:22px 28px;flex:1;min-width:120px;max-width:160px;
+    position:relative;
+  }
+  .process-step::after{
+    content:'';position:absolute;right:-1px;top:50%;
+    transform:translateY(-50%);width:2px;height:40%;
+    background:linear-gradient(to bottom,transparent,rgba(168,85,247,.4),transparent);
+  }
+  .process-step:last-child::after{display:none;}
+    .process-icon{
+    width:48px;height:48px;border-radius:14px;
+    background:linear-gradient(135deg,rgba(168,85,247,.15),rgba(255,110,199,.1));
+    border:1px solid rgba(168,85,247,.3);
+    display:flex;align-items:center;justify-content:center;
+    font-size:20px;transition:transform .3s ease,box-shadow .3s ease;
+  }
+  .process-step:hover .process-icon{
+    transform:translateY(-4px);
+    box-shadow:0 12px 30px rgba(168,85,247,.3);
+    border-color:var(--magenta);
+  }
+  .process-label{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);text-align:center;}
+  .process-num{font-family:'Orbitron',monospace;font-size:10px;color:rgba(168,85,247,.5);}
+
+  /* ====== TOOL CHIPS ====== */
+  .tools-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px;}
+  .tool-chip{
+    display:inline-flex;align-items:center;gap:6px;
+    padding:5px 14px;border-radius:30px;
+    background:rgba(168,85,247,.08);border:1px solid rgba(168,85,247,.22);
+    font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);
+    transition:all .25s ease;
+  }
+  .tool-chip:hover{background:rgba(168,85,247,.18);border-color:var(--magenta);color:#fff;}
+  .tool-chip-dot{width:6px;height:6px;border-radius:50%;background:var(--magenta);flex-shrink:0;}
+
+  /* ====== DESIGN INSIGHT CALLOUT ====== */
+  .insight{
+    background:linear-gradient(135deg,rgba(168,85,247,.07),rgba(255,110,199,.04));
+    border:1px solid rgba(168,85,247,.2);border-left:3px solid var(--magenta);
+    border-radius:0 16px 16px 0;padding:20px 26px;
+    margin:36px 0;font-size:15px;line-height:1.65;color:var(--ink);
+    position:relative;
+  }
+  .insight::before{
+    content:'INSIGHT';position:absolute;top:-1px;left:20px;
+    transform:translateY(-50%);
+    font-family:'Orbitron',monospace;font-size:9px;letter-spacing:3px;
+    background:var(--magenta);color:#fff;padding:2px 10px;border-radius:10px;
+  }
+
+  /* ====== CHALLENGE / SOLUTION SPLIT ====== */
+  .cs-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin:36px 0;}
+  .cs-card{
+    background:rgba(168,85,247,.05);border:1px solid rgba(168,85,247,.18);
+    border-radius:16px;padding:26px 24px;
+  }
+  .cs-label{
+    font-family:'Orbitron',monospace;font-size:9px;letter-spacing:3px;
+    text-transform:uppercase;margin-bottom:12px;display:block;
+  }
+  .cs-card.challenge .cs-label{color:#ff6b6b;}
+  .cs-card.solution  .cs-label{color:#6effa8;}
+  .cs-card p{font-size:14px;line-height:1.6;color:var(--ink);}
+  @media(max-width:700px){.cs-grid{grid-template-columns:1fr;}}
+
+  /* ====== RESULT STATS ROW (per section) ====== */
+  .result-row{
+    display:flex;gap:0;margin:40px 0;
+    border:1px solid rgba(168,85,247,.2);border-radius:18px;overflow:hidden;
+  }
+  .result-item{
+    flex:1;padding:24px 20px;text-align:center;
+    border-right:1px solid rgba(168,85,247,.15);
+    background:rgba(168,85,247,.04);transition:background .3s ease;
+  }
+  .result-item:hover{background:rgba(168,85,247,.1);}
+  .result-item:last-child{border-right:none;}
+  .result-val{
+    font-family:'Orbitron',monospace;font-weight:900;
+    font-size:clamp(20px,3vw,32px);
+    background:linear-gradient(135deg,#fff,#a855f7);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  }
+  .result-key{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-top:4px;}
+  @media(max-width:600px){.result-row{flex-direction:column;}.result-item{border-right:none;border-bottom:1px solid rgba(168,85,247,.15);}
+  .result-item:last-child{border-bottom:none;}}
+
+  /* ====== SECTION FULL INTRO HEADER ====== */
+  .section-intro{
+    display:flex;justify-content:space-between;align-items:flex-start;
+    gap:40px;margin-bottom:52px;flex-wrap:wrap;
+  }
+  .section-intro-left{flex:2;min-width:260px;}
+  .section-intro-right{
+    flex:1;min-width:200px;
+    background:rgba(168,85,247,.06);border:1px solid rgba(168,85,247,.2);
+    border-radius:16px;padding:22px 20px;
+  }
+  .side-meta-label{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+  .side-meta-val{font-weight:700;font-size:15px;color:var(--ink);margin-bottom:16px;}
+
+  /* ====== SECTION DIVIDER ====== */
+  .section-divider{
+    height:1px;
+    background:linear-gradient(to right,transparent,rgba(168,85,247,.25),transparent);
+    margin:20px 0 0;
+  }
+
+  /* ====== FEATURED FRAME (first image extra big) ====== */
+  .frame-featured{grid-column:1/-1;min-height:360px;}
+
+  /* ====== ENHANCED SECTION TITLE ====== */
+  h2.title{position:relative;display:inline-block;}
+
+  /* ====== HOVER INFO on frames ====== */
+  .frame-info{
+    position:absolute;top:18px;left:18px;
+    background:rgba(6,3,14,.75);backdrop-filter:blur(8px);
+    border:1px solid rgba(168,85,247,.25);border-radius:10px;
+    padding:6px 14px;font-size:11px;letter-spacing:2px;
+    text-transform:uppercase;color:var(--muted);
+    opacity:0;transform:translateY(-6px);
+    transition:all .3s ease;pointer-events:none;
+  }
+  .frame:hover .frame-info{opacity:1;transform:translateY(0);}
+
+  /* ====== TIMELINE improvement ====== */
+  .tl-item{transition:transform .3s ease;}
+  .tl-item:hover{transform:translateX(6px);}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js"></script>
+<style>
+  /* Premium Glassmorphism Overrides */
+  .brief-card, .c-card, .type-card, .cs-card, .result-item, .frame-info { backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+  #radar-nav { padding: 20px 10px; background: rgba(6,3,14,0.4); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid rgba(168,85,247,0.2); border-radius: 40px; }
+  /* Text Reveal Animations */
+  .reveal-text { overflow: hidden; display: inline-block; }
+  .reveal-text span { display: inline-block; transform: translateY(100%); opacity: 0; }
+</style>
+</head>
+<body>
+
+<svg id="progress-ring" viewBox="0 0 48 48">
+  <circle class="track" cx="24" cy="24" r="21"/>
+  <circle class="fill" cx="24" cy="24" r="21" id="ring-fill"/>
+</svg>
+
+
+<canvas id="stars"></canvas>
+<div id="scan"></div>
+
+<nav id="radar-nav">
+  <div class="radar-dot" data-target="#hero" data-label="Intro"></div>
+  <div class="radar-dot" data-target="#overview" data-label="Overview"></div>
+  <div class="radar-dot" data-target="#hero-art" data-label="Posters"></div>
+  <div class="radar-dot" data-target="#flyer" data-label="Flyer"></div>
+  <div class="radar-dot" data-target="#brochure" data-label="Brochure"></div>
+  <div class="radar-dot" data-target="#social" data-label="Social"></div>
+  <div class="radar-dot" data-target="#modules" data-label="Modules"></div>
+  <div class="radar-dot" data-target="#timeline" data-label="Timeline"></div>
+  <div class="radar-dot" data-target="#print" data-label="Print"></div>
+  <div class="radar-dot" data-target="#brand" data-label="Brand"></div>
+  <div class="radar-dot" data-target="#contact" data-label="Contact"></div>
+</nav>
+
+<div class="wrap">
+
+  <!-- HERO -->
+  <section class="hero" id="hero">
+    <div class="hero-badges">
+      <span class="badge">Air University</span>
+      <span class="badge">AirAura '25</span>
+    </div>
+    <h1 class="hero-title">AIRAURA</h1>
+    <div class="hero-year">2025</div>
+    <div class="hero-tag">Innovation &nbsp;·&nbsp; Competition &nbsp;·&nbsp; Collaboration</div>
+    <p class="hero-desc">A complete <b>brand identity &amp; print system</b> for AirAura 2025 — a national-level
+      student festival hosted by Air University, Aerospace &amp; Aviation Campus, Kamra, 9–11 May.</p>
+    <div class="stat-row">
+      <div class="stat"><div class="stat-num" data-count="13">0</div><div class="stat-label">Design Assets</div></div>
+      <div class="stat"><div class="stat-num" data-count="6">0</div><div class="stat-label">Formats</div></div>
+      <div class="stat"><div class="stat-num" data-count="3">0</div><div class="stat-label">Event Days</div></div>
+      <div class="stat"><div class="stat-num" data-count="200">0</div><div class="stat-label">Unis Invited</div></div>
+    </div>
+    <div class="scroll-cue"><span>Scroll</span><div class="scroll-line"></div></div>
+  </section>
+
+
+  <!-- DESIGN PROCESS STRIP -->
+  <section style="padding:60px 0 20px;">
+    <div class="process-strip reveal">
+      <div class="process-step">
+        <div class="process-icon"><img src="./images/icon_research.png" alt="Research" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;" /></div>
+        <div class="process-num">01</div>
+        <div class="process-label">Research</div>
+      </div>
+      <div class="process-step">
+        <div class="process-icon"><img src="./images/icon_ideation.png" alt="Ideation" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;" /></div>
+        <div class="process-num">02</div>
+        <div class="process-label">Ideation</div>
+      </div>
+      <div class="process-step">
+        <div class="process-icon"><img src="./images/icon_concept.png" alt="Concept" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;" /></div>
+        <div class="process-num">03</div>
+        <div class="process-label">Concept</div>
+      </div>
+      <div class="process-step">
+        <div class="process-icon"><img src="./images/icon_design.png" alt="Design" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;" /></div>
+        <div class="process-num">04</div>
+        <div class="process-label">Design</div>
+      </div>
+      <div class="process-step">
+        <div class="process-icon"><img src="./images/icon_refine.png" alt="Refine" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;" /></div>
+        <div class="process-num">05</div>
+        <div class="process-label">Refine</div>
+      </div>
+      <div class="process-step">
+        <div class="process-icon"><img src="./images/icon_deliver.png" alt="Deliver" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;" /></div>
+        <div class="process-num">06</div>
+        <div class="process-label">Deliver</div>
+      </div>
+    </div>
+  </section>
+  <!-- OVERVIEW -->
+  <section id="overview">
+    <div class="eyebrow reveal"><span class="eyebrow-num">01 / OVERVIEW</span><div class="eyebrow-line"></div></div>
+    <h2 class="title reveal">Project Brief</h2>
+    <p class="subtitle reveal">A national-level event needs a brand system that travels — poster to Instagram to standee to ID card, without losing its voice.</p>
+    <div class="brief-grid">
+      <div class="brief-card reveal"><div class="brief-num">13+</div><div class="brief-label">Print &amp; digital assets</div></div>
+      <div class="brief-card reveal"><div class="brief-num">200+</div><div class="brief-label">Universities invited</div></div>
+      <div class="brief-card reveal"><div class="brief-num">3</div><div class="brief-label">Days of events</div></div>
+      <div class="brief-card reveal"><div class="brief-num">01</div><div class="brief-label">Cohesive brand identity</div></div>
+    </div>
+
+    <div class="cs-grid reveal">
+      <div class="cs-card challenge">
+        <span class="cs-label">The Challenge</span>
+        <p>Create a unified brand identity that works consistently across 13+ print and digital formats â€” from large-scale standees to small ID cards â€” while maintaining visual impact.</p>
+      </div>
+      <div class="cs-card solution">
+        <span class="cs-label">The Approach</span>
+        <p>Built a modular design system using a strict color palette, two complementary typefaces, and a single hero visual language â€” ensuring brand coherence at every scale.</p>
+      </div>
+    </div>
+    <div class="tools-row reveal">
+      <span class="tool-chip"><span class="tool-chip-dot"></span>Adobe Illustrator</span>
+      <span class="tool-chip"><span class="tool-chip-dot"></span>Adobe Photoshop</span>
+      <span class="tool-chip"><span class="tool-chip-dot"></span>Canva Pro</span>
+      <span class="tool-chip"><span class="tool-chip-dot"></span>Brand Identity</span>
+      <span class="tool-chip"><span class="tool-chip-dot"></span>Print Design</span>
+      <span class="tool-chip"><span class="tool-chip-dot"></span>Digital Media</span>
+    </div>
+  </section>
+
+  <!-- HERO ARTWORK -->
+  <section id="hero-art">
+    <div class="eyebrow reveal"><span class="eyebrow-num">02 / HERO ARTWORK</span><div class="eyebrow-line"></div></div>
+    <h2 class="title reveal">Main Event Posters</h2>
+    <p class="subtitle reveal">The core key visual — announcing dates and driving registrations.</p>
+    <div class="insight reveal">
+      The main poster was the anchor of the entire identity â€” every other format inherited its color logic, typographic hierarchy, and spatial balance. Dark atmospheric backgrounds contrast with glowing purple and magenta accents to create a sense of scale and excitement.
+    </div>
+    <div class="result-row reveal">
+      <div class="result-item"><div class="result-val">2</div><div class="result-key">Hero Variants</div></div>
+      <div class="result-item"><div class="result-val">A1</div><div class="result-key">Print Size</div></div>
+      <div class="result-item"><div class="result-val">300 DPI</div><div class="result-key">Resolution</div></div>
+      <div class="result-item"><div class="result-val">CMYK</div><div class="result-key">Color Mode</div></div>
+    </div>
+    <div class="grid2">
+      <div class="frame reveal-l" data-full="images/save_the_date.png">
+        <img src="images/save_the_date.png" alt="Save-the-date poster">
+        <div class="glare"></div>
+        <div class="frame-caption"><b>Save-the-Date Announcement</b><span>Wordmark + dates + tagline</span></div>
+      </div>
+      <div class="frame reveal-r" data-full="images/registration_poster.png">
+        <img src="images/registration_poster.png" alt="Registration drive poster">
+        <div class="glare"></div>
+        <div class="frame-caption"><b>Registration Drive Poster</b><span>Dual QR — portal + Zindigi</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- INFO FLYER -->
+  <section id="flyer">
+    <div class="eyebrow reveal"><span class="eyebrow-num">03 / INFO GRAPHIC</span><div class="eyebrow-line"></div></div>
+    <h2 class="title reveal">Event Info Flyer</h2>
+    <p class="subtitle reveal">Modules, stats and CSR messaging in a single scannable sheet.</p>
+    <div class="insight reveal">
+      Flyer design focused on hierarchy of information â€” event name, date, venue, and QR code all needed to be scannable within 3 seconds. The purple-to-black gradient ties back to the hero poster while the layout is optimized for digital sharing.
+    </div>
+    <div class="tools-row reveal">
+      <span class="tool-chip"><span class="tool-chip-dot"></span>A5 Format</span>
+      <span class="tool-chip"><span class="tool-chip-dot"></span>Social Ready</span>
+      <span class="tool-chip"><span class="tool-chip-dot"></span>QR Integration</span>
+    </div>
+    <div class="single-frame frame reveal" data-full="images/info_flyer.png">
+      <img src="images/info_flyer.png" alt="Info flyer">
+      <div class="glare"></div>
+      <div class="frame-caption"><b>Modules &amp; CSR Flyer</b><span>Full event breakdown</span></div>
+    </div>
+  </section>
+
+  <!-- BROCHURE -->
+  <section id="brochure">
+    <div class="eyebrow reveal"><span class="eyebrow-num">04 / SPONSORSHIP</span><div class="eyebrow-line"></div></div>
+    <h2 class="title reveal">Tri-fold Sponsorship Brochure</h2>
+    <p class="subtitle reveal">Silver / Gold / Platinum packages, area of operation &amp; CSR pitch.</p>
+    <div class="stack">
+      <div class="frame reveal" data-full="images/brochure_front.png">
+        <img src="images/brochure_front.png" alt="Brochure front">
+        <div class="glare"></div>
+        <div class="frame-caption"><b>Front Panels</b><span>Introduction · Sponsorships · Modules</span></div>
+      </div>
+      <div class="frame reveal" data-full="images/brochure_back.png">
+        <img src="images/brochure_back.png" alt="Brochure back">
+        <div class="glare"></div>
+        <div class="frame-caption"><b>Back Panel</b><span>CSR &amp; Thank You + contact details</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SOCIAL -->
+  <section id="social">
+    <div class="eyebrow reveal"><span class="eyebrow-num">05 / SOCIAL MEDIA</span><div class="eyebrow-line"></div></div>
+    <h2 class="title reveal">Instagram Graphics</h2>
+    <p class="subtitle reveal">Vertical posts for ambassador recruitment, hostel bookings &amp; registration.</p>
+    <div class="insight reveal">
+      Social media graphics were adapted for Instagram feed, stories, and Facebook covers. Each post maintains the brand signature while being cropped and composed for maximum impact at thumb-scroll speed.
+    </div>
+    <div class="tools-row reveal">
+      <span class="tool-chip"><span class="tool-chip-dot"></span>Instagram Feed</span>
+      <span class="tool-chip"><span class="tool-chip-dot"></span>Story Format</span>
+      <span class="tool-chip"><span class="tool-chip-dot"></span>1080x1080</span>
+      <span class="tool-chip"><span class="tool-chip-dot"></span>1920x1080</span>
+    </div>
+    <div class="grid3">
+      <div class="frame reveal" data-full="images/call_for_ambassadors.png">
+        <img src="images/call_for_ambassadors.png" alt="Call for ambassadors">
+        <div class="glare"></div>
+        <div class="frame-caption"><b>Call for Ambassadors</b><span>Incentive tiers + QR</span></div>
+      </div>
+      <div class="frame reveal" data-full="images/hostel_accommodation.png">
+        <img src="images/hostel_accommodation.png" alt="Hostel accommodation">
+        <div class="glare"></div>
+        <div class="frame-caption"><b>Hostel Accommodation</b><span>Package pricing</span></div>
+      </div>
+      <div class="frame reveal" data-full="images/registrations_open.png">
+        <img src="images/registrations_open.png" alt="Registrations open">
+        <div class="glare"></div>
+        <div class="frame-caption"><b>Registrations Open</b><span>QR-led sign-up post</span></div>
+      </div>
+    </div>
+  </section>
+  <!-- MODULES -->
+  <section id="modules">
+    <div class="eyebrow reveal"><span class="eyebrow-num">06 / EVENT MODULES</span><div class="eyebrow-line"></div></div>
+    <h2 class="title reveal">Competitions &amp; Modules</h2>
+    <p class="subtitle reveal">A visual breakdown of all AirAura 2025 event modules and competitions designed for participants.</p>
+    <div class="insight reveal">
+      The modules graphic communicates the full scope of AirAura 2025 â€” listing every competition category, technical event, and collaborative challenge across all three days. Designed for maximum clarity at a glance.
+    </div>
+    <div class="result-row reveal">
+      <div class="result-item"><div class="result-val">10+</div><div class="result-key">Competitions</div></div>
+      <div class="result-item"><div class="result-val">3</div><div class="result-key">Event Days</div></div>
+      <div class="result-item"><div class="result-val">200+</div><div class="result-key">Participants</div></div>
+      <div class="result-item"><div class="result-val">A3</div><div class="result-key">Print Size</div></div>
+    </div>
+    <div style="display:flex;justify-content:center;margin-top:48px;">
+      <div class="frame reveal" data-full="images/modules_competitions.png" style="max-width:820px;width:100%;cursor:pointer;" onclick="openLightbox(this)">
+        <img src="images/modules_competitions.png" alt="AirAura 2025 Modules &amp; Competitions" style="width:100%;display:block;border-radius:18px;">
+        <div class="frame-overlay"><span class="frame-zoom">&#x26F6; EXPAND</span></div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- TIMELINE -->
+  <section id="timeline">
+    <div class="eyebrow reveal"><span class="eyebrow-num">06 / SCHEDULE</span><div class="eyebrow-line"></div></div>
+    <h2 class="title reveal">Event Timeline</h2>
+    <p class="subtitle reveal">Day-wise activity tables — venue &amp; timing at a glance.</p>
+    <div class="grid2">
+      <div class="frame reveal-l" data-full="images/timeline_day1.png">
+        <img src="images/timeline_day1.png" alt="Day 1 timeline">
+        <div class="glare"></div>
+        <div class="frame-caption"><b>Day 01 — Friday</b><span>Sports · robotics · quiz</span></div>
+      </div>
+      <div class="frame reveal-r" data-full="images/timeline_day3.png">
+        <img src="images/timeline_day3.png" alt="Day 3 timeline">
+        <div class="glare"></div>
+        <div class="frame-caption"><b>Day 03 — Sunday</b><span>Closing-day schedule</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRINT -->
+  <section id="print">
+    <div class="eyebrow reveal"><span class="eyebrow-num">07 / PASSES &amp; PRINT</span><div class="eyebrow-line"></div></div>
+    <h2 class="title reveal">Visitor Pass, Standee &amp; ID</h2>
+    <p class="subtitle reveal">On-ground print collateral for entry, wayfinding &amp; identity.</p>
+    <div class="insight reveal">
+      Print collateral including brochures, ID cards, and banners required careful attention to bleed areas, safe zones, and CMYK color accuracy. Every asset was prepared as production-ready files.
+    </div>
+    <div class="tools-row reveal">
+      <span class="tool-chip"><span class="tool-chip-dot"></span>Bleed Ready</span>
+      <span class="tool-chip"><span class="tool-chip-dot"></span>CMYK</span>
+      <span class="tool-chip"><span class="tool-chip-dot"></span>300 DPI</span>
+      <span class="tool-chip"><span class="tool-chip-dot"></span>Print Ready</span>
+    </div>
+    <div class="grid3">
+      <div class="frame reveal" data-full="images/visitor_pass.png">
+        <img src="images/visitor_pass.png" alt="Visitor pass">
+        <div class="glare"></div>
+        <div class="frame-caption"><b>Visitor Pass</b><span>Entry fee tiers + guidelines</span></div>
+      </div>
+      <div class="frame reveal" data-full="images/standee.png">
+        <img src="images/standee.png" alt="Standee">
+        <div class="glare"></div>
+        <div class="frame-caption"><b>Registration Standee</b><span>Venue floor standee</span></div>
+      </div>
+      <div class="frame reveal" data-full="images/id_card.png">
+        <img src="images/id_card.png" alt="ID card">
+        <div class="glare"></div>
+        <div class="frame-caption"><b>Organiser ID Card</b><span>Portrait badge template</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BRAND SYSTEM -->
+  <section id="brand">
+    <div class="eyebrow reveal"><span class="eyebrow-num">08 / BRAND SYSTEM</span><div class="eyebrow-line"></div></div>
+    <h2 class="title reveal">Colour &amp; Type</h2>
+    <p class="subtitle reveal">Consistent hues and faces carried across every touchpoint.</p>
+
+    <div class="result-row reveal">
+      <div class="result-item"><div class="result-val">2</div><div class="result-key">Typefaces</div></div>
+      <div class="result-item"><div class="result-val">5</div><div class="result-key">Brand Colors</div></div>
+      <div class="result-item"><div class="result-val">13+</div><div class="result-key">Applications</div></div>
+      <div class="result-item"><div class="result-val">100%</div><div class="result-key">Consistent</div></div>
+    </div>
+    <div class="palette-row">
+      <div class="swatch reveal"><div class="swatch-color" style="background:#08050f;"></div><div class="swatch-info"><div class="swatch-hex">#08050F</div><div class="swatch-name">Deep Space</div></div></div>
+      <div class="swatch reveal"><div class="swatch-color" style="background:#4a1a80;"></div><div class="swatch-info"><div class="swatch-hex">#4A1A80</div><div class="swatch-name">Royal Purple</div></div></div>
+      <div class="swatch reveal"><div class="swatch-color" style="background:#a855f7;"></div><div class="swatch-info"><div class="swatch-hex">#A855F7</div><div class="swatch-name">Electric Violet</div></div></div>
+      <div class="swatch reveal"><div class="swatch-color" style="background:#ff6ec7;"></div><div class="swatch-info"><div class="swatch-hex">#FF6EC7</div><div class="swatch-name">Magenta Glow</div></div></div>
+      <div class="swatch reveal"><div class="swatch-color" style="background:#ffd166;"></div><div class="swatch-info"><div class="swatch-hex">#FFD166</div><div class="swatch-name">Aviation Gold</div></div></div>
+      <div class="swatch reveal"><div class="swatch-color" style="background:#ffffff;"></div><div class="swatch-info"><div class="swatch-hex">#FFFFFF</div><div class="swatch-name">Pure White</div></div></div>
+    </div>
+    <div class="type-grid">
+      <div class="type-card reveal"><div class="type-card-label">Display</div><div class="type-sample-orb">AIRAURA</div><div class="type-desc">Orbitron — wordmark, section numbers, big statements.</div></div>
+      <div class="type-card reveal"><div class="type-card-label">Headline</div><div class="type-sample-raj">Modules &amp; Prizes</div><div class="type-desc">Rajdhani — headings, stats, buttons, body copy.</div></div>
+      <div class="type-card reveal"><div class="type-card-label">Accent</div><div class="type-sample-raj" style="font-style:italic;">2025</div><div class="type-desc">Italic accent used for the year mark across posters &amp; passes.</div></div>
+    </div>
+  </section>
+
+  <!-- CONTACT SECTION -->
+  <section id="contact">
+    <div class="eyebrow reveal">
+      <div class="eyebrow-num">10</div>
+      <div class="eyebrow-line"></div>
+    </div>
+    <h2 class="title reveal">Let's <span style="color:var(--magenta);">Connect</span></h2>
+
+    <div class="contact-intro reveal">
+      <div class="avail-badge">
+        <span class="avail-dot"></span>
+        Available for freelance &amp; collaboration
+      </div>
+      <p class="subtitle" style="color:var(--muted);">
+        Got a project in mind? Looking for a creative partner?<br>
+        I'd love to hear from you &mdash; let's build something great together.
+      </p>
+    </div>
+
+    <!-- Contact Cards -->
+    <div class="contact-grid reveal">
+
+      <!-- Email -->
+      <a href="mailto:adrenal5678@gmail.com" class="c-card" id="cc-email">
+        <span class="c-card-arrow">&#8599;</span>
+        <div class="c-card-icon"><svg width="28" height="28" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><path fill="#4CAF50" d="M45 16.2l-5 2.75-5 4.75V40h7a3 3 0 003-3V16.2z"/><path fill="#1565C0" d="M3 16.2l3.5 2.75L11 23.7V40H4a3 3 0 01-3-3V16.2z"/><polygon fill="#E53935" points="35,11.2 24,19.45 13,11.2 12,17 13,23.7 24,31.95 35,23.7 36,17"/><path fill="#C62828" d="M3 12.298V16.2l10 7.5V11.2L9 9.298A2 2 0 003 12.298z"/><path fill="#FBC02D" d="M45 12.298V16.2l-10 7.5V11.2l4-1.902A2 2 0 0145 12.298z"/></svg></div>
+        <div>
+          <div class="c-card-label">Email</div>
+          <div class="c-card-value">adrenal5678@gmail.com</div>
+        </div>
+      </a>
+
+      <!-- Phone / WhatsApp -->
+      <a href="https://wa.me/923179808319" target="_blank" class="c-card" id="cc-phone">
+        <span class="c-card-arrow">&#8599;</span>
+        <div class="c-card-icon"><svg width="28" height="28" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fill="#25D366" d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></div>
+        <div>
+          <div class="c-card-label">WhatsApp / Phone</div>
+          <div class="c-card-value">+92 317 980 8319</div>
+        </div>
+      </a>
+
+      <!-- LinkedIn -->
+      <a href="https://www.linkedin.com/in/faiza-tabassum-02a332202" target="_blank" class="c-card c-linkedin" id="cc-linkedin">
+        <span class="c-card-arrow">&#8599;</span>
+        <div class="c-card-icon"><svg width="28" height="28" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect width="24" height="24" rx="4" fill="#0A66C2"/><path fill="#fff" d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452z"/></svg></div>
+        <div>
+          <div class="c-card-label">LinkedIn</div>
+          <div class="c-card-value">Faiza Tabassum</div>
+        </div>
+      </a>
+
+    </div>
+
+    <!-- CTA Buttons -->
+    <div class="contact-cta-row reveal">
+      <a href="mailto:adrenal5678@gmail.com" class="cta-btn cta-btn-primary"><svg width="18" height="18" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle;flex-shrink:0"><path fill="#4CAF50" d="M45 16.2l-5 2.75-5 4.75V40h7a3 3 0 003-3V16.2z"/><path fill="#1565C0" d="M3 16.2l3.5 2.75L11 23.7V40H4a3 3 0 01-3-3V16.2z"/><polygon fill="#E53935" points="35,11.2 24,19.45 13,11.2 12,17 13,23.7 24,31.95 35,23.7 36,17"/><path fill="#C62828" d="M3 12.298V16.2l10 7.5V11.2L9 9.298A2 2 0 003 12.298z"/><path fill="#FBC02D" d="M45 12.298V16.2l-10 7.5V11.2l4-1.902A2 2 0 0145 12.298z"/></svg> &nbsp;Send Me an Email
+      </a>
+      <a href="https://wa.me/923179808319" target="_blank" class="cta-btn cta-btn-outline"><svg width="18" height="18" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle;flex-shrink:0"><path fill="#25D366" d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg> &nbsp;WhatsApp Me
+      </a>
+    </div>
+
+    <!-- Designer Name -->
+    <div class="contact-designer-name reveal">FAIZA TABASSUM</div>
+    <p class="contact-tagline reveal">Brand Designer &nbsp;Â·&nbsp; Air University &nbsp;Â·&nbsp; AirAura Creative Team</p>
+
+  </section>
+  <footer class="reveal">
+    <div class="footer-title">AIRAURA 2025</div>
+    <p class="footer-text">Inspire, Innovate, Ignite — a full brand system for Air University's flagship national event, from first poster to final print.</p>
+    <div class="footer-credit">Design &amp; Brand Identity — AirAura Creative Team</div>
+  </footer>
+
+</div>
+
+<div id="lightbox">
+  <button id="lightbox-close">CLOSE ✕</button>
+  <img src="" alt="">
+</div>
+
+<script>
+  // ---------- starfield ----------
+  const canvas = document.getElementById('stars');
+  const ctx = canvas.getContext('2d');
+  let w,h,stars=[];
+  function resize(){
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = document.documentElement.scrollHeight;
+  }
+  function initStars(){
+    stars = [];
+    const count = Math.floor((w*h)/9000);
+    for(let i=0;i<count;i++){
+      stars.push({
+        x: Math.random()*w,
+        y: Math.random()*h,
+        r: Math.random()*1.3+0.2,
+        s: Math.random()*0.4+0.1,
+        tw: Math.random()*Math.PI*2
+      });
+    }
+  }
+  resize(); initStars();
+  window.addEventListener('resize', ()=>{ resize(); initStars(); });
+
+  function drawStars(t){
+    ctx.clearRect(0,0,w,h);
+    for(const st of stars){
+      const alpha = 0.4 + Math.sin(t*0.001 + st.tw)*0.35;
+      ctx.beginPath();
+      ctx.arc(st.x, st.y, st.r, 0, Math.PI*2);
+      ctx.fillStyle = `rgba(216,200,240,${Math.max(0,alpha)})`;
+      ctx.fill();
+    }
+    requestAnimationFrame(drawStars);
+  }
+  requestAnimationFrame(drawStars);
+
+  // ---------- scan progress ----------
+  const scan = document.getElementById('scan');
+  window.addEventListener('scroll', ()=>{
+    const scrolled = window.scrollY;
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    scan.style.width = (scrolled/max*100)+'%';
+  });
+
+  // ---------- radar nav ----------
+  const dots = document.querySelectorAll('.radar-dot');
+  const targets = [...dots].map(d=>document.querySelector(d.dataset.target));
+  dots.forEach(d=>{
+    d.addEventListener('click', ()=>{
+      document.querySelector(d.dataset.target).scrollIntoView({behavior:'smooth'});
+    });
+  });
+  function updateRadar(){
+    let idx = 0;
+    targets.forEach((t,i)=>{
+      if(t.getBoundingClientRect().top < window.innerHeight*0.5) idx = i;
+    });
+    dots.forEach((d,i)=> d.classList.toggle('active', i===idx));
+  }
+  window.addEventListener('scroll', updateRadar);
+  updateRadar();
+
+  // ---------- scroll reveal ----------
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      }
+    });
+  }, {threshold:0.15});
+  document.querySelectorAll('.reveal, .reveal-l, .reveal-r').forEach(el=>io.observe(el));
+
+  // ---------- count-up stats ----------
+  const counters = document.querySelectorAll('.stat-num');
+  const cio = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        const el = e.target;
+        const target = parseInt(el.dataset.count,10);
+        let cur = 0;
+        const step = Math.max(1, Math.round(target/40));
+        const tick = ()=>{
+          cur += step;
+          if(cur >= target){ el.textContent = target + (target>=100?'+':''); return; }
+          el.textContent = cur;
+          requestAnimationFrame(tick);
+        };
+        tick();
+        cio.unobserve(el);
+      }
+    });
+  }, {threshold:0.6});
+  counters.forEach(c=>cio.observe(c));
+
+  // ---------- scroll-triggered 3D reveal for frames ----------
+  const frameRevealIO = new IntersectionObserver((entries)=>{
+    entries.forEach((e, i)=>{
+      if(e.isIntersecting){
+        // stagger each card slightly
+        const delay = (e.target._frameIndex || 0) * 120;
+        setTimeout(()=>{
+          e.target.classList.add('frame-revealed');
+        }, delay);
+        frameRevealIO.unobserve(e.target);
+      }
+    });
+  }, {threshold:0.12});
+  document.querySelectorAll('.frame').forEach((frame, idx)=>{
+    frame._frameIndex = idx;
+    frameRevealIO.observe(frame);
+  });
+
+  // ---------- frame tilt + glare (only after revealed) ----------
+  document.querySelectorAll('.frame').forEach(frame=>{
+    frame.addEventListener('mousemove', (e)=>{
+      if(!frame.classList.contains('frame-revealed')) return;
+      const r = frame.getBoundingClientRect();
+      const x = (e.clientX - r.left)/r.width;
+      const y = (e.clientY - r.top)/r.height;
+      const rotX = (0.5-y)*10;
+      const rotY = (x-0.5)*10;
+      frame.style.transform = `perspective(900px) rotateX(${rotX}deg) rotateY(${rotY}deg) translateY(-6px) scale(1.02)`;
+      frame.style.boxShadow = `0 40px 90px rgba(168,85,247,0.5), 0 0 30px rgba(255,110,199,0.2)`;
+      frame.style.setProperty('--mx', (x*100)+'%');
+      frame.style.setProperty('--my', (y*100)+'%');
+    });
+    frame.addEventListener('mouseleave', ()=>{
+      if(!frame.classList.contains('frame-revealed')) return;
+      frame.style.transform = 'perspective(900px) rotateX(0) rotateY(0) translateY(0) scale(1)';
+      frame.style.boxShadow = '';
+    });
+    frame.addEventListener('click', ()=>{
+      const src = frame.dataset.full;
+      if(!src) return;
+      lightbox.querySelector('img').src = src;
+      lightbox.classList.add('open');
+    });
+  });
+
+  // ---------- lightbox ----------
+  const lightbox = document.getElementById('lightbox');
+  document.getElementById('lightbox-close').addEventListener('click', ()=> lightbox.classList.remove('open'));
+  lightbox.addEventListener('click', (e)=>{ if(e.target===lightbox) lightbox.classList.remove('open'); });
+  document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') lightbox.classList.remove('open'); });
+
+  
+
+  // ===== HERO MOUSE PARALLAX =====
+  const heroEl = document.querySelector('.hero');
+  const heroTitle = document.querySelector('.hero-title');
+  const heroYear  = document.querySelector('.hero-year');
+  const heroBadges = document.querySelector('.hero-badges');
+  document.addEventListener('mousemove', e => {
+    if(!heroEl) return;
+    const cx = window.innerWidth/2, cy = window.innerHeight/2;
+    const dx = (e.clientX - cx)/cx;
+    const dy = (e.clientY - cy)/cy;
+    if(heroTitle)  heroTitle.style.transform  = `translate(${dx*-14}px,${dy*-8}px)`;
+    if(heroYear)   heroYear.style.transform   = `translate(${dx*-8}px,${dy*-5}px)`;
+    if(heroBadges) heroBadges.style.transform = `translate(${dx*-5}px,${dy*-3}px)`;
+  });
+
+  // ===== TYPEWRITER EFFECT on hero-tag =====
+  const heroTag = document.querySelector('.hero-tag');
+  if(heroTag){
+    const words = ['Innovation', 'Competition', 'Collaboration', 'Excellence', 'Creativity'];
+    let wIdx = 0, cIdx = 0, deleting = false;
+    heroTag.innerHTML = '<span class="tw-text"></span>';
+    const twEl = heroTag.querySelector('.tw-text');
+    function typeWrite(){
+      const word = words[wIdx];
+      if(!deleting){
+        twEl.textContent = word.slice(0, ++cIdx);
+        if(cIdx === word.length){ deleting=true; setTimeout(typeWrite, 1800); return; }
+      } else {
+        twEl.textContent = word.slice(0, --cIdx);
+        if(cIdx === 0){ deleting=false; wIdx=(wIdx+1)%words.length; setTimeout(typeWrite, 400); return; }
+      }
+      setTimeout(typeWrite, deleting ? 55 : 95);
+    }
+    setTimeout(typeWrite, 1800);
+  }
+
+  // ===== MAGNETIC BADGES =====
+  document.querySelectorAll('.badge').forEach(badge => {
+    badge.addEventListener('mousemove', e => {
+      const r = badge.getBoundingClientRect();
+      const dx = (e.clientX - r.left - r.width/2) * 0.4;
+      const dy = (e.clientY - r.top  - r.height/2) * 0.4;
+      badge.style.transform = `translate(${dx}px,${dy}px) scale(1.06)`;
+    });
+    badge.addEventListener('mouseleave', () => {
+      badge.style.transform = '';
+    });
+  });
+
+  // ===== BRIEF CARD MOUSE GLOW =====
+  document.querySelectorAll('.brief-card').forEach(card => {
+    card.addEventListener('mousemove', e => {
+      const r = card.getBoundingClientRect();
+      const x = ((e.clientX - r.left)/r.width*100).toFixed(1);
+      const y = ((e.clientY - r.top)/r.height*100).toFixed(1);
+      card.style.setProperty('--cx', x+'%');
+      card.style.setProperty('--cy', y+'%');
+    });
+  });
+
+  // ===== SCROLL PROGRESS RING =====
+  const ringFill = document.getElementById('ring-fill');
+  const circumference = 2 * Math.PI * 21;
+  ringFill.style.strokeDasharray = circumference;
+  window.addEventListener('scroll', () => {
+    const scrolled = window.scrollY;
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = scrolled / max;
+    ringFill.style.strokeDashoffset = circumference * (1 - progress);
+  });
+
+  // ===== SECTION NUMBER FLASH on reveal =====
+  const revealObserverExtra = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if(e.isIntersecting){
+        const num = e.target.querySelector('.eyebrow-num');
+        if(num){ num.style.animation='none'; void num.offsetWidth; num.style.animation=''; }
+      }
+    });
+  }, {threshold:0.3});
+  document.querySelectorAll('.eyebrow').forEach(el => revealObserverExtra.observe(el));
+
+  // ===== CONTACT CARD MOUSE GLOW =====
+  document.querySelectorAll('.c-card').forEach(card => {
+    card.addEventListener('mousemove', e => {
+      const r = card.getBoundingClientRect();
+      card.style.setProperty('--cx', ((e.clientX - r.left)/r.width*100).toFixed(1)+'%');
+      card.style.setProperty('--cy', ((e.clientY - r.top)/r.height*100).toFixed(1)+'%');
+    });
+  });
+
+  // ====== PROCESS STRIP STAGGER ======
+  document.querySelectorAll('.process-step').forEach((step, i) => {
+    step.style.opacity = '0';
+    step.style.transform = 'translateY(20px)';
+    step.style.transition = 'all 0.5s ease';
+    const psio = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if(e.isIntersecting){
+          setTimeout(() => {
+            step.style.opacity = '1';
+            step.style.transform = 'translateY(0)';
+          }, i * 100);
+          psio.unobserve(step);
+        }
+      });
+    }, {threshold:0.3});
+    psio.observe(step);
+  });
+
+  // ====== RESULT ITEM COUNT-UP ======
+  document.querySelectorAll('.result-val').forEach(el => {
+    const text = el.textContent.trim();
+    const num = parseInt(text);
+    if(isNaN(num)) return;
+    const suffix = text.replace(String(num),'');
+    el.textContent = '0' + suffix;
+    const rio = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if(e.isIntersecting){
+          let cur = 0;
+          const step = Math.max(1, Math.round(num/25));
+          const tick = () => {
+            cur = Math.min(cur + step, num);
+            el.textContent = cur + suffix;
+            if(cur < num) requestAnimationFrame(tick);
+          };
+          tick();
+          rio.unobserve(el);
+        }
+      });
+    }, {threshold:0.5});
+    rio.observe(el);
+  });
+  // ====== UNIVERSAL MAGNETIC EFFECT ======
+  document.querySelectorAll('.cta-btn, .radar-dot, .c-card-icon').forEach(el => {
+    el.addEventListener('mousemove', e => {
+      const r = el.getBoundingClientRect();
+      const dx = (e.clientX - r.left - r.width/2) * 0.35;
+      const dy = (e.clientY - r.top  - r.height/2) * 0.35;
+      el.style.transform = `translate(${dx}px, ${dy}px)`;
+    });
+    el.addEventListener('mouseleave', () => {
+      el.style.transform = '';
+    });
+  });
+
+  // ====== ADVANCED GRID STAGGERING ======
+  const staggerObserver = new IntersectionObserver((entries) => {
+    let intersecting = entries.filter(e => e.isIntersecting);
+    intersecting.forEach((e, i) => {
+      setTimeout(() => {
+        e.target.style.opacity = '1';
+        e.target.style.transform = 'translateY(0)';
+      }, i * 120);
+      staggerObserver.unobserve(e.target);
+    });
+  }, {threshold: 0.15});
+
+  document.querySelectorAll('.brief-card, .cs-card, .result-item, .contact-grid .c-card').forEach(el => {
+    el.classList.remove('reveal'); // remove standard reveal
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(30px)';
+    el.style.transition = 'opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)';
+    staggerObserver.observe(el);
+  });
+</script>
+<script>
+  // ===== LENIS SMOOTH SCROLL =====
+  const lenis = new Lenis({
+    duration: 1.2,
+    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+    smooth: true,
+  });
+
+
+  // ===== GSAP SCROLLTRIGGER =====
+  gsap.registerPlugin(ScrollTrigger);
+
+  // Text Reveal Animations for headings
+  document.querySelectorAll('h2.title').forEach(title => {
+    const words = title.innerText.split(' ');
+    title.innerHTML = '';
+    words.forEach(word => {
+      const span = document.createElement('span');
+      span.className = 'reveal-text';
+      span.innerHTML = `<span style="display:inline-block;">${word}</span>&nbsp;`;
+      title.appendChild(span);
+    });
+
+    gsap.to(title.querySelectorAll('.reveal-text > span'), {
+      scrollTrigger: { trigger: title, start: "top 85%" },
+      y: 0, opacity: 1, duration: 0.8, stagger: 0.1, ease: "power4.out"
+    });
+  });
+
+  // Advanced Section Reveals using GSAP
+  document.querySelectorAll('.reveal').forEach(el => {
+    el.classList.remove('reveal');
+    gsap.fromTo(el, 
+      { y: 60, opacity: 0 }, 
+      { scrollTrigger: { trigger: el, start: "top 85%" }, y: 0, opacity: 1, duration: 1.2, ease: "power3.out" }
+    );
+  });
+
+  // Connect GSAP to Lenis
+  lenis.on('scroll', ScrollTrigger.update);
+  gsap.ticker.add((time)=>{ lenis.raf(time * 1000) });
+  gsap.ticker.lagSmoothing(0);
+</script>
+
+</body>
+</html>
