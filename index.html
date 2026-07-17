@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>AirAura 2025 — Design Portfolio</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&display=swap');
 
   :root{
     --bg:#08050f;
@@ -23,7 +23,7 @@
   body{
     background: linear-gradient(160deg, #0d0520 0%, #08050f 40%, #120830 70%, #0a0418 100%);
     color:#fff;
-    font-family:'Rajdhani',sans-serif;
+    font-family:'Poppins',sans-serif;
     overflow-x:hidden;
     cursor:default;
   }
@@ -56,7 +56,7 @@
   .hero-badges{display:flex;gap:14px;margin-bottom:38px;opacity:0;animation:fadeUp .9s .2s forwards;}
   .badge{border:1px solid rgba(168,85,247,.45);background:rgba(168,85,247,.1);border-radius:40px;padding:8px 20px;font-size:12px;letter-spacing:3px;text-transform:uppercase;color:#d9b8ff;}
   .hero-title{font-family:'Orbitron',monospace;font-weight:900;font-size:clamp(64px,11vw,160px);line-height:.95;letter-spacing:-2px;background:linear-gradient(135deg,#fff 0%,#dcb4ff 35%,#a855f7 70%,#6b21c9 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;opacity:0;animation:fadeUp 1s .35s forwards;}
-  .hero-year{font-family:'Rajdhani',sans-serif;font-style:italic;font-weight:600;font-size:clamp(30px,4vw,48px);color:var(--magenta);margin-top:6px;opacity:0;animation:fadeUp 1s .5s forwards;}
+  .hero-year{font-family:'Poppins',sans-serif;font-style:italic;font-weight:600;font-size:clamp(30px,4vw,48px);color:var(--magenta);margin-top:6px;opacity:0;animation:fadeUp 1s .5s forwards;}
   .hero-tag{margin-top:26px;font-size:15px;letter-spacing:5px;text-transform:uppercase;color:var(--ink);opacity:0;animation:fadeUp 1s .65s forwards;}
   .hero-desc{max-width:640px;margin-top:30px;font-size:18px;line-height:1.7;color:var(--ink);opacity:0;animation:fadeUp 1s .8s forwards;}
   .hero-desc b{color:#fff;}
@@ -105,7 +105,7 @@
   .frame:hover .glare{opacity:1;}
   .frame .frame-caption{position:absolute;left:0;right:0;bottom:0;padding:22px 24px;background:linear-gradient(to top,rgba(6,3,14,.92),transparent);transform:translateY(12px);opacity:0;transition:all .35s ease;}
   .frame:hover .frame-caption{transform:translateY(0);opacity:1;}
-  .frame-caption b{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:17px;display:block;}
+  .frame-caption b{font-family:'Poppins',sans-serif;font-weight:700;font-size:17px;display:block;}
   .frame-caption span{font-size:13px;color:var(--muted);}
 
   /* duo / trio grids */
@@ -124,7 +124,7 @@
   .swatch:hover{transform:translateY(-6px);}
   .swatch-color{height:110px;border-radius:12px 12px 0 0;border:1px solid rgba(255,255,255,.12);}
   .swatch-info{background:rgba(255,255,255,.04);border:1px solid rgba(168,85,247,.2);border-top:none;border-radius:0 0 12px 12px;padding:10px 12px;}
-  .swatch-hex{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:14px;}
+  .swatch-hex{font-family:'Poppins',sans-serif;font-weight:700;font-size:14px;}
   .swatch-name{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-top:2px;}
 
   /* type system */
@@ -134,7 +134,7 @@
   .type-card:hover{border-color:var(--magenta);}
   .type-card-label{font-size:12px;letter-spacing:3px;color:var(--magenta);text-transform:uppercase;margin-bottom:16px;}
   .type-sample-orb{font-family:'Orbitron',monospace;font-size:32px;}
-  .type-sample-raj{font-family:'Rajdhani',sans-serif;font-weight:600;font-size:32px;}
+  .type-sample-pop{font-family:'Poppins',sans-serif;font-weight:600;font-size:32px;}
   .type-desc{font-size:13px;color:var(--muted);margin-top:16px;line-height:1.5;}
 
   /* footer */
@@ -148,7 +148,7 @@
   #lightbox.open{opacity:1;pointer-events:auto;}
   #lightbox img{max-width:88vw;max-height:86vh;border-radius:12px;box-shadow:0 40px 100px rgba(0,0,0,.6);transform:scale(.94);transition:transform .3s ease; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));}
   #lightbox.open img{transform:scale(1);}
-  #lightbox-close{position:absolute;top:30px;right:40px;font-family:'Rajdhani',sans-serif;font-size:14px;letter-spacing:2px;color:#fff;border:1px solid rgba(255,255,255,.3);padding:8px 18px;border-radius:30px;cursor:pointer;background:transparent;}
+  #lightbox-close{position:absolute;top:30px;right:40px;font-family:'Poppins',sans-serif;font-size:14px;letter-spacing:2px;color:#fff;border:1px solid rgba(255,255,255,.3);padding:8px 18px;border-radius:30px;cursor:pointer;background:transparent;}
   #lightbox-close:hover{border-color:var(--magenta);color:var(--magenta);}
 
   /* Custom cursor */
@@ -261,7 +261,7 @@
   }
   .c-card:hover .c-card-icon{transform:scale(1.1) rotate(-4deg);}
   .c-card-label{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:2px;}
-  .c-card-value{font-family:'Rajdhani',sans-serif;font-weight:600;font-size:17px;color:#fff;word-break:break-all;line-height:1.3;}
+  .c-card-value{font-family:'Poppins',sans-serif;font-weight:600;font-size:17px;color:#fff;word-break:break-all;line-height:1.3;}
   .c-card-arrow{
     position:absolute;top:22px;right:22px;
     font-size:16px;color:rgba(168,85,247,.4);
@@ -803,8 +803,8 @@
     </div>
     <div class="type-grid">
       <div class="type-card reveal"><div class="type-card-label">Display</div><div class="type-sample-orb">AIRAURA</div><div class="type-desc">Orbitron — wordmark, section numbers, big statements.</div></div>
-      <div class="type-card reveal"><div class="type-card-label">Headline</div><div class="type-sample-raj">Modules &amp; Prizes</div><div class="type-desc">Rajdhani — headings, stats, buttons, body copy.</div></div>
-      <div class="type-card reveal"><div class="type-card-label">Accent</div><div class="type-sample-raj" style="font-style:italic;">2025</div><div class="type-desc">Italic accent used for the year mark across posters &amp; passes.</div></div>
+      <div class="type-card reveal"><div class="type-card-label">Headline</div><div class="type-sample-pop">Modules &amp; Prizes</div><div class="type-desc">Poppins — headings, stats, buttons, body copy.</div></div>
+      <div class="type-card reveal"><div class="type-card-label">Accent</div><div class="type-sample-pop" style="font-style:italic;">2025</div><div class="type-desc">Italic accent used for the year mark across posters &amp; passes.</div></div>
     </div>
   </section>
 
