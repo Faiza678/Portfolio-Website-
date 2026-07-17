@@ -476,11 +476,20 @@
     .result-item{border-right:none;border-bottom:1px solid rgba(168,85,247,.15);}
     .result-item:last-child{border-bottom:none;}
     
-    /* Disable rendering of heavy elements on Mobile to fix lag entirely */
+    /* Disable rendering of heavy loop elements on Mobile to fix lag entirely */
     #noise { display: none !important; }
     #orbs-container { display: none !important; }
     #stars { display: none !important; }
     
+    /* Premium High-End Fallback: Lightweight CSS Gradient Glow Spots for Mobile Layout */
+    body {
+      background: linear-gradient(160deg, #0d0520 0%, #08050f 40%, #120830 70%, #0a0418 100%),
+                  radial-gradient(circle at 15% 20%, rgba(168, 85, 247, 0.22) 0%, transparent 55%),
+                  radial-gradient(circle at 85% 75%, rgba(255, 110, 199, 0.16) 0%, transparent 55%) !important;
+      background-blend-mode: screen !important;
+      background-attachment: fixed !important;
+    }
+
     /* Optimize simple 2D transforms for GPU */
     .frame, .brief-card, .c-card, .swatch {
       transform: none !important;
@@ -754,7 +763,7 @@
     </div>
   </section>
 
-  <!-- PRINT TO DIGITAL SECTION -->
+  <!-- PASSES & DIGITAL COLLATERAL SECTION -->
   <section id="print">
     <div class="eyebrow reveal"><span class="eyebrow-num">07 / PASSES &amp; DIGITAL COLLATERAL</span><div class="eyebrow-line"></div></div>
     <h2 class="title reveal">Visitor Pass, Standee &amp; ID</h2>
