@@ -889,24 +889,57 @@
 </div>
 
 <script>
+  // Detect touch device
+  const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+  // Custom cursor setup (only on non-touch devices)
+  const dot = document.getElementById('cursor-dot');
+  const ring = document.getElementById('cursor-ring');
+  if (isTouchDevice) {
+    if (dot) dot.style.display = 'none';
+    if (ring) ring.style.display = 'none';
+    // Remove the global *{cursor:none} style if on touch device
+    const styleEl = document.createElement('style');
+    styleEl.innerHTML = '*{cursor:auto !important;}';
+    document.head.appendChild(styleEl);
+  } else {
+    let mx = window.innerWidth/2, my = window.innerHeight/2;
+    let rx = mx, ry = my;
+    document.addEventListener('mousemove', e => { 
+      mx = e.clientX; 
+      my = e.clientY; 
+      dot.style.left = mx + 'px'; 
+      dot.style.top = my + 'px'; 
+    });
+    (function lerpRing(){
+      rx += (mx - rx) * 0.12;
+      ry += (my - ry) * 0.12;
+      ring.style.left = rx + 'px';
+      ring.style.top  = ry + 'px';
+      requestAnimationFrame(lerpRing);
+    })();
+  }
+
   // Starfield
   const canvas = document.getElementById('stars');
   const ctx = canvas.getContext('2d');
-  let w,h,stars=[];
+  let w, h, stars = [];
   function resize(){
     w = canvas.width = window.innerWidth;
-    h = canvas.height = document.documentElement.scrollHeight;
+    // Set to innerHeight (viewport) instead of full scrollHeight to prevent massive bitmap memory allocation
+    h = canvas.height = window.innerHeight;
   }
   function initStars(){
     stars = [];
-    const count = Math.floor((w*h)/9000);
-    for(let i=0;i<count;i++){
+    // Proportional count based on viewport area
+    const count = Math.floor((w * h) / 9000);
+    for(let i=0; i<count; i++){
       stars.push({
-        x: Math.random()*w,
-        y: Math.random()*h,
-        r: Math.random()*1.3+0.2,
-        s: Math.random()*0.4+0.1,
-        tw: Math.random()*Math.PI*2
+        x: Math.random() * w,
+        y: Math.random() * h,
+        r: Math.random() * 1.3 + 0.2,
+        s: Math.random() * 0.4 + 0.1,
+        tw: Math.random() * Math.PI * 2
       });
     }
   }
@@ -916,9 +949,9 @@
   function drawStars(t){
     ctx.clearRect(0,0,w,h);
     for(const st of stars){
-      const alpha = 0.4 + Math.sin(t*0.001 + st.tw)*0.35;
+      const alpha = 0.4 + Math.sin(t * 0.001 + st.tw) * 0.35;
       ctx.beginPath();
-      ctx.arc(st.x, st.y, st.r, 0, Math.PI*2);
+      ctx.arc(st.x, st.y, st.r, 0, Math.PI * 2);
       ctx.fillStyle = `rgba(216,200,240,${Math.max(0,alpha)})`;
       ctx.fill();
     }
@@ -926,15 +959,7 @@
   }
   requestAnimationFrame(drawStars);
 
-  // Scan progress
-  const scan = document.getElementById('scan');
-  window.addEventListener('scroll', ()=>{
-    const scrolled = window.scrollY;
-    const max = document.documentElement.scrollHeight - window.innerHeight;
-    scan.style.width = (scrolled/max*100)+'%';
-  });
-
-  // Radar nav
+  // Radar nav setup
   const dots = document.querySelectorAll('.radar-dot');
   const targets = [...dots].map(d=>document.querySelector(d.dataset.target));
   dots.forEach(d=>{
@@ -942,15 +967,42 @@
       document.querySelector(d.dataset.target).scrollIntoView({behavior:'smooth'});
     });
   });
+  
   function updateRadar(){
     let idx = 0;
-    targets.forEach((t,i)=>{
-      if(t.getBoundingClientRect().top < window.innerHeight*0.5) idx = i;
+    const vhHalf = window.innerHeight * 0.5;
+    targets.forEach((t, i)=>{
+      if (t && t.getBoundingClientRect().top < vhHalf) idx = i;
     });
-    dots.forEach((d,i)=> d.classList.toggle('active', i===idx));
+    dots.forEach((d, i)=> d.classList.toggle('active', i === idx));
   }
-  window.addEventListener('scroll', updateRadar);
   updateRadar();
+
+  // Consolidated Scroll Listener with requestAnimationFrame and Passive Events
+  const scan = document.getElementById('scan');
+  const ringFill = document.getElementById('ring-fill');
+  const circumference = 2 * Math.PI * 21;
+  if (ringFill) ringFill.style.strokeDasharray = circumference;
+
+  let ticking = false;
+  function handleScrollUpdate() {
+    const scrolled = window.scrollY;
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    if (max > 0) {
+      const progress = scrolled / max;
+      if (scan) scan.style.width = (progress * 100) + '%';
+      if (ringFill) ringFill.style.strokeDashoffset = circumference * (1 - progress);
+    }
+    updateRadar();
+    ticking = false;
+  }
+
+  window.addEventListener('scroll', ()=>{
+    if (!ticking) {
+      window.requestAnimationFrame(handleScrollUpdate);
+      ticking = true;
+    }
+  }, { passive: true });
 
   // Scroll reveal
   const io = new IntersectionObserver((entries)=>{
@@ -989,7 +1041,6 @@
   const frameRevealIO = new IntersectionObserver((entries)=>{
     entries.forEach((e, i)=>{
       if(e.isIntersecting){
-        // stagger each card slightly
         const delay = (e.target._frameIndex || 0) * 120;
         setTimeout(()=>{
           e.target.classList.add('frame-revealed');
@@ -1003,25 +1054,27 @@
     frameRevealIO.observe(frame);
   });
 
-  // Frame tilt + glare (only after revealed)
+  // Frame tilt, glare + click (no tilt/glare on touch devices to prevent lag)
   document.querySelectorAll('.frame').forEach(frame=>{
-    frame.addEventListener('mousemove', (e)=>{
-      if(!frame.classList.contains('frame-revealed')) return;
-      const r = frame.getBoundingClientRect();
-      const x = (e.clientX - r.left)/r.width;
-      const y = (e.clientY - r.top)/r.height;
-      const rotX = (0.5-y)*10;
-      const rotY = (x-0.5)*10;
-      frame.style.transform = `perspective(900px) rotateX(${rotX}deg) rotateY(${rotY}deg) translateY(-6px) scale(1.02)`;
-      frame.style.boxShadow = `0 40px 90px rgba(168,85,247,0.5), 0 0 30px rgba(255,110,199,0.2)`;
-      frame.style.setProperty('--mx', (x*100)+'%');
-      frame.style.setProperty('--my', (y*100)+'%');
-    });
-    frame.addEventListener('mouseleave', ()=>{
-      if(!frame.classList.contains('frame-revealed')) return;
-      frame.style.transform = 'perspective(900px) rotateX(0) rotateY(0) translateY(0) scale(1)';
-      frame.style.boxShadow = '';
-    });
+    if (!isTouchDevice) {
+      frame.addEventListener('mousemove', (e)=>{
+        if(!frame.classList.contains('frame-revealed')) return;
+        const r = frame.getBoundingClientRect();
+        const x = (e.clientX - r.left)/r.width;
+        const y = (e.clientY - r.top)/r.height;
+        const rotX = (0.5-y)*10;
+        const rotY = (x-0.5)*10;
+        frame.style.transform = `perspective(900px) rotateX(${rotX}deg) rotateY(${rotY}deg) translateY(-6px) scale(1.02)`;
+        frame.style.boxShadow = `0 40px 90px rgba(168,85,247,0.5), 0 0 30px rgba(255,110,199,0.2)`;
+        frame.style.setProperty('--mx', (x*100)+'%');
+        frame.style.setProperty('--my', (y*100)+'%');
+      });
+      frame.addEventListener('mouseleave', ()=>{
+        if(!frame.classList.contains('frame-revealed')) return;
+        frame.style.transform = 'perspective(900px) rotateX(0) rotateY(0) translateY(0) scale(1)';
+        frame.style.boxShadow = '';
+      });
+    }
     frame.addEventListener('click', ()=>{
       const src = frame.dataset.full;
       if(!src) return;
@@ -1032,34 +1085,24 @@
 
   // Lightbox
   const lightbox = document.getElementById('lightbox');
-  document.getElementById('lightbox-close').addEventListener('click', ()=> lightbox.classList.remove('open'));
-  lightbox.addEventListener('click', (e)=>{ if(e.target===lightbox) lightbox.classList.remove('open'); });
-  document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') lightbox.classList.remove('open'); });
+  if (lightbox) {
+    document.getElementById('lightbox-close').addEventListener('click', ()=> lightbox.classList.remove('open'));
+    lightbox.addEventListener('click', (e)=>{ if(e.target===lightbox) lightbox.classList.remove('open'); });
+    document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') lightbox.classList.remove('open'); });
+  }
 
-  // Custom cursor
-  const dot = document.getElementById('cursor-dot');
-  const ring = document.getElementById('cursor-ring');
-  let mx=window.innerWidth/2, my=window.innerHeight/2;
-  let rx=mx, ry=my;
-  document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; dot.style.left=mx+'px'; dot.style.top=my+'px'; });
-  (function lerpRing(){
-    rx += (mx - rx) * 0.12;
-    ry += (my - ry) * 0.12;
-    ring.style.left = rx + 'px';
-    ring.style.top  = ry + 'px';
-    requestAnimationFrame(lerpRing);
-  })();
+  // Click ripple (disabled on touch devices to prevent lag)
+  if (!isTouchDevice) {
+    document.addEventListener('click', e => {
+      const r = document.createElement('div');
+      r.className = 'ripple';
+      r.style.cssText = `left:${e.clientX}px;top:${e.clientY}px;width:10px;height:10px;`;
+      document.body.appendChild(r);
+      setTimeout(()=>r.remove(), 700);
+    });
+  }
 
-  // Click ripple
-  document.addEventListener('click', e => {
-    const r = document.createElement('div');
-    r.className = 'ripple';
-    r.style.cssText = `left:${e.clientX}px;top:${e.clientY}px;width:10px;height:10px;`;
-    document.body.appendChild(r);
-    setTimeout(()=>r.remove(), 700);
-  });
-
-  // Floating orbs
+  // Floating orbs (reduced on mobile)
   const orbContainer = document.getElementById('orbs-container');
   const orbColors = [
     'rgba(168,85,247,0.18)', 'rgba(255,110,199,0.14)',
@@ -1067,9 +1110,10 @@
     'rgba(74,26,128,0.22)'
   ];
   function spawnOrb(){
+    if (!orbContainer) return;
     const orb = document.createElement('div');
     orb.className = 'orb';
-    const size = 120 + Math.random()*280;
+    const size = (isTouchDevice ? 80 : 120) + Math.random() * (isTouchDevice ? 150 : 280);
     const tx = (Math.random()-0.5)*400;
     const dur = 12 + Math.random()*18;
     orb.style.cssText = `
@@ -1084,23 +1128,26 @@
     orbContainer.appendChild(orb);
     setTimeout(()=>orb.remove(), (dur+5)*1000);
   }
-  for(let i=0;i<6;i++) spawnOrb();
-  setInterval(spawnOrb, 3500);
+  const maxOrbs = isTouchDevice ? 3 : 6;
+  for(let i=0; i<maxOrbs; i++) spawnOrb();
+  setInterval(spawnOrb, isTouchDevice ? 6000 : 3500);
 
-  // Hero mouse parallax
-  const heroEl = document.querySelector('.hero');
-  const heroTitle = document.querySelector('.hero-title');
-  const heroYear  = document.querySelector('.hero-year');
-  const heroBadges = document.querySelector('.hero-badges');
-  document.addEventListener('mousemove', e => {
-    if(!heroEl) return;
-    const cx = window.innerWidth/2, cy = window.innerHeight/2;
-    const dx = (e.clientX - cx)/cx;
-    const dy = (e.clientY - cy)/cy;
-    if(heroTitle)  heroTitle.style.transform  = `translate(${dx*-14}px,${dy*-8}px)`;
-    if(heroYear)   heroYear.style.transform   = `translate(${dx*-8}px,${dy*-5}px)`;
-    if(heroBadges) heroBadges.style.transform = `translate(${dx*-5}px,${dy*-3}px)`;
-  });
+  // Hero mouse parallax (disabled on touch devices)
+  if (!isTouchDevice) {
+    const heroEl = document.querySelector('.hero');
+    const heroTitle = document.querySelector('.hero-title');
+    const heroYear  = document.querySelector('.hero-year');
+    const heroBadges = document.querySelector('.hero-badges');
+    document.addEventListener('mousemove', e => {
+      if(!heroEl) return;
+      const cx = window.innerWidth/2, cy = window.innerHeight/2;
+      const dx = (e.clientX - cx)/cx;
+      const dy = (e.clientY - cy)/cy;
+      if(heroTitle)  heroTitle.style.transform  = `translate(${dx*-14}px,${dy*-8}px)`;
+      if(heroYear)   heroYear.style.transform   = `translate(${dx*-8}px,${dy*-5}px)`;
+      if(heroBadges) heroBadges.style.transform = `translate(${dx*-5}px,${dy*-3}px)`;
+    });
+  }
 
   // Typewriter effect on hero-tag
   const heroTag = document.querySelector('.hero-tag');
@@ -1123,40 +1170,33 @@
     setTimeout(typeWrite, 1800);
   }
 
-  // Magnetic badges
-  document.querySelectorAll('.badge').forEach(badge => {
-    badge.addEventListener('mousemove', e => {
-      const r = badge.getBoundingClientRect();
-      const dx = (e.clientX - r.left - r.width/2) * 0.4;
-      const dy = (e.clientY - r.top  - r.height/2) * 0.4;
-      badge.style.transform = `translate(${dx}px,${dy}px) scale(1.06)`;
+  // Magnetic badges (disabled on touch devices)
+  if (!isTouchDevice) {
+    document.querySelectorAll('.badge').forEach(badge => {
+      badge.addEventListener('mousemove', e => {
+        const r = badge.getBoundingClientRect();
+        const dx = (e.clientX - r.left - r.width/2) * 0.4;
+        const dy = (e.clientY - r.top  - r.height/2) * 0.4;
+        badge.style.transform = `translate(${dx}px,${dy}px) scale(1.06)`;
+      });
+      badge.addEventListener('mouseleave', () => {
+        badge.style.transform = '';
+      });
     });
-    badge.addEventListener('mouseleave', () => {
-      badge.style.transform = '';
-    });
-  });
+  }
 
-  // Brief card mouse glow
-  document.querySelectorAll('.brief-card').forEach(card => {
-    card.addEventListener('mousemove', e => {
-      const r = card.getBoundingClientRect();
-      const x = ((e.clientX - r.left)/r.width*100).toFixed(1);
-      const y = ((e.clientY - r.top)/r.height*100).toFixed(1);
-      card.style.setProperty('--cx', x+'%');
-      card.style.setProperty('--cy', y+'%');
+  // Brief card mouse glow (disabled on touch devices)
+  if (!isTouchDevice) {
+    document.querySelectorAll('.brief-card').forEach(card => {
+      card.addEventListener('mousemove', e => {
+        const r = card.getBoundingClientRect();
+        const x = ((e.clientX - r.left)/r.width*100).toFixed(1);
+        const y = ((e.clientY - r.top)/r.height*100).toFixed(1);
+        card.style.setProperty('--cx', x+'%');
+        card.style.setProperty('--cy', y+'%');
+      });
     });
-  });
-
-  // Scroll progress ring
-  const ringFill = document.getElementById('ring-fill');
-  const circumference = 2 * Math.PI * 21;
-  ringFill.style.strokeDasharray = circumference;
-  window.addEventListener('scroll', () => {
-    const scrolled = window.scrollY;
-    const max = document.documentElement.scrollHeight - window.innerHeight;
-    const progress = scrolled / max;
-    ringFill.style.strokeDashoffset = circumference * (1 - progress);
-  });
+  }
 
   // Section number flash on reveal
   const revealObserverExtra = new IntersectionObserver((entries) => {
@@ -1169,14 +1209,16 @@
   }, {threshold:0.3});
   document.querySelectorAll('.eyebrow').forEach(el => revealObserverExtra.observe(el));
 
-  // Contact card mouse glow
-  document.querySelectorAll('.c-card').forEach(card => {
-    card.addEventListener('mousemove', e => {
-      const r = card.getBoundingClientRect();
-      card.style.setProperty('--cx', ((e.clientX - r.left)/r.width*100).toFixed(1)+'%');
-      card.style.setProperty('--cy', ((e.clientY - r.top)/r.height*100).toFixed(1)+'%');
+  // Contact card mouse glow (disabled on touch devices)
+  if (!isTouchDevice) {
+    document.querySelectorAll('.c-card').forEach(card => {
+      card.addEventListener('mousemove', e => {
+        const r = card.getBoundingClientRect();
+        card.style.setProperty('--cx', ((e.clientX - r.left)/r.width*100).toFixed(1)+'%');
+        card.style.setProperty('--cy', ((e.clientY - r.top)/r.height*100).toFixed(1)+'%');
+      });
     });
-  });
+  }
 
   // Process strip stagger
   document.querySelectorAll('.process-step').forEach((step, i) => {
