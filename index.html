@@ -506,6 +506,115 @@
       will-change: auto !important;
     }
   }
+
+  /* About Me Section */
+  #about-me{position:relative;padding:140px 0 100px;}
+
+  .about-layout{
+    display:grid;
+    grid-template-columns:320px 1fr;
+    gap:60px;
+    align-items:start;
+    margin-top:50px;
+  }
+  @media(max-width:900px){
+    .about-layout{grid-template-columns:1fr;gap:40px;justify-items:center;text-align:center;}
+  }
+
+  .about-photo-wrap{
+    position:relative;
+    width:280px;height:280px;
+    border-radius:50%;
+    overflow:hidden;
+    border:3px solid rgba(168,85,247,.5);
+    box-shadow:0 0 40px rgba(168,85,247,.3), 0 0 80px rgba(255,110,199,.15);
+    transition:transform .5s ease, box-shadow .5s ease;
+  }
+  .about-photo-wrap:hover{
+    transform:scale(1.04) rotate(-2deg);
+    box-shadow:0 0 60px rgba(168,85,247,.5), 0 0 100px rgba(255,110,199,.25);
+  }
+  .about-photo-wrap img{width:100%;height:100%;object-fit:cover;}
+  .about-photo-glow{
+    position:absolute;inset:-20px;border-radius:50%;
+    background:conic-gradient(from 0deg, rgba(168,85,247,.3), rgba(255,110,199,.2), rgba(168,85,247,.3));
+    filter:blur(30px);z-index:-1;
+    animation:glowSpin 8s linear infinite;
+  }
+  @keyframes glowSpin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+
+  .about-bio{font-size:16px;line-height:1.7;color:var(--ink);margin-bottom:30px;}
+  .about-bio strong{color:#fff;}
+
+  .about-stats-row{
+    display:flex;gap:30px;margin-bottom:36px;flex-wrap:wrap;
+  }
+  @media(max-width:900px){.about-stats-row{justify-content:center;}}
+  .about-stat{
+    background:rgba(168,85,247,.08);
+    border:1px solid rgba(168,85,247,.25);
+    border-radius:16px;padding:18px 24px;
+    text-align:center;min-width:100px;
+    transition:transform .3s ease, border-color .3s ease;
+  }
+  .about-stat:hover{transform:translateY(-4px);border-color:var(--magenta);}
+  .about-stat-num{font-family:'Orbitron',monospace;font-weight:900;font-size:28px;color:var(--gold);}
+  .about-stat-label{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-top:4px;}
+
+  .about-skills-title{
+    font-family:'Orbitron',monospace;font-size:12px;letter-spacing:4px;
+    text-transform:uppercase;color:var(--magenta);margin-bottom:14px;font-weight:700;
+  }
+  .about-skills-wrap{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:36px;}
+  @media(max-width:900px){.about-skills-wrap{justify-content:center;}}
+  .about-skill{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:8px 18px;border-radius:30px;
+    background:linear-gradient(135deg,rgba(168,85,247,.12),rgba(255,110,199,.06));
+    border:1px solid rgba(168,85,247,.3);
+    font-size:13px;font-weight:500;color:var(--ink);letter-spacing:1px;
+    transition:all .3s ease;
+  }
+  .about-skill:hover{border-color:var(--magenta);background:rgba(168,85,247,.2);color:#fff;transform:translateY(-2px);}
+  .about-skill-icon{font-size:16px;}
+
+  .about-exp-grid{
+    display:grid;grid-template-columns:1fr 1fr;
+    gap:20px;margin-top:16px;
+  }
+  @media(max-width:900px){.about-exp-grid{grid-template-columns:1fr;}}
+  .about-exp-card{
+    background:linear-gradient(145deg,rgba(168,85,247,.08),rgba(74,26,128,.05));
+    border:1px solid rgba(168,85,247,.22);
+    border-radius:18px;padding:24px;
+    transition:transform .3s ease, border-color .3s ease;
+    position:relative;overflow:hidden;
+  }
+  .about-exp-card::before{
+    content:'';position:absolute;top:0;left:0;right:0;height:3px;
+    background:linear-gradient(90deg,var(--violet),var(--magenta));
+    opacity:0;transition:opacity .3s ease;
+  }
+  .about-exp-card:hover{transform:translateY(-4px);border-color:var(--magenta);}
+  .about-exp-card:hover::before{opacity:1;}
+  .about-exp-role{font-weight:700;font-size:16px;color:#fff;margin-bottom:4px;}
+  .about-exp-company{font-size:13px;color:var(--magenta);font-weight:600;margin-bottom:4px;}
+  .about-exp-date{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+  .about-exp-desc{font-size:13px;line-height:1.6;color:var(--ink);}
+
+  .about-edu{
+    display:flex;align-items:center;gap:18px;
+    background:rgba(168,85,247,.06);
+    border:1px solid rgba(168,85,247,.2);
+    border-radius:16px;padding:22px 26px;
+    margin-top:20px;
+    transition:border-color .3s ease;
+  }
+  .about-edu:hover{border-color:var(--magenta);}
+  .about-edu-icon{font-size:32px;flex-shrink:0;}
+  .about-edu-degree{font-weight:700;font-size:16px;color:#fff;}
+  .about-edu-uni{font-size:13px;color:var(--muted);margin-top:2px;}
+
 </style>
 </head>
 <body>
@@ -532,6 +641,7 @@
   <div class="radar-dot" data-target="#timeline" data-label="Timeline"></div>
   <div class="radar-dot" data-target="#print" data-label="Print"></div>
   <div class="radar-dot" data-target="#brand" data-label="Brand"></div>
+  <div class="radar-dot" data-target="#about-me" data-label="About"></div>
   <div class="radar-dot" data-target="#contact" data-label="Contact"></div>
 </nav>
 
@@ -830,6 +940,103 @@
       <div class="type-card reveal"><div class="type-card-label">Display</div><div class="type-sample-orb">AIRAURA</div><div class="type-desc">Orbitron — wordmark, section numbers, big statements.</div></div>
       <div class="type-card reveal"><div class="type-card-label">Interface &amp; Body</div><div class="type-sample-pop">Modules &amp; Prizes</div><div class="type-desc">Rajdhani — descriptions, body copy, layout strings, buttons.</div></div>
       <div class="type-card reveal"><div class="type-card-label">Accent</div><div class="type-sample-pop" style="font-style:italic;">2025</div><div class="type-desc">Italic accent used for the year mark across posters &amp; passes.</div></div>
+    </div>
+  </section>
+
+  <!-- ABOUT ME SECTION -->
+  <section id="about-me">
+    <div class="eyebrow reveal"><span class="eyebrow-num">09 / THE DESIGNER</span><div class="eyebrow-line"></div></div>
+    <h2 class="title reveal">About <span style="color:var(--magenta);">Me</span></h2>
+    <p class="subtitle reveal">The creative mind behind AirAura's brand identity.</p>
+
+    <div class="about-layout">
+      <!-- Photo -->
+      <div class="reveal" style="position:relative;">
+        <div class="about-photo-glow"></div>
+        <div class="about-photo-wrap">
+          <img loading="lazy" src="images/faiza_headshot.jpg" alt="Faiza Tabassum">
+        </div>
+      </div>
+
+      <!-- Bio Content -->
+      <div>
+        <p class="about-bio reveal">
+          Hi, I'm <strong>Faiza Tabassum</strong> — a passionate <strong>graphic designer</strong> and <strong>short-form video editor</strong> with a strong grip on creative designs, trendy edits, and fast-paced visual storytelling. With <strong>4+ years</strong> of hands-on experience, I've collaborated with multiple companies to craft brand identities, social media campaigns, and marketing collateral across diverse industries and content styles.
+        </p>
+        <p class="about-bio reveal">
+          My focus is always on <strong>clean, modern visuals</strong> that align perfectly with a brand's personality. From large-scale event branding like AirAura 2025 to startup pitch decks and crypto projects — I bring consistency, creativity, and attention to detail to every pixel.
+        </p>
+
+        <!-- Quick Stats -->
+        <div class="about-stats-row reveal">
+          <div class="about-stat"><div class="about-stat-num">4+</div><div class="about-stat-label">Years Exp</div></div>
+          <div class="about-stat"><div class="about-stat-num">3</div><div class="about-stat-label">Companies</div></div>
+          <div class="about-stat"><div class="about-stat-num">20+</div><div class="about-stat-label">Projects</div></div>
+          <div class="about-stat"><div class="about-stat-num">40%</div><div class="about-stat-label">Engagement Boost</div></div>
+        </div>
+
+        <!-- Skills -->
+        <div class="about-skills-title reveal">Technical Skills</div>
+        <div class="about-skills-wrap reveal">
+          <span class="about-skill"><span class="about-skill-icon">🎨</span> Adobe Photoshop</span>
+          <span class="about-skill"><span class="about-skill-icon">✏️</span> Canva Pro</span>
+          <span class="about-skill"><span class="about-skill-icon">🖼️</span> Figma</span>
+          <span class="about-skill"><span class="about-skill-icon">🎬</span> CapCut Pro</span>
+          <span class="about-skill"><span class="about-skill-icon">🎮</span> Unity</span>
+          <span class="about-skill"><span class="about-skill-icon">🎙️</span> Voiceover</span>
+        </div>
+
+        <div class="about-skills-title reveal">Soft Skills</div>
+        <div class="about-skills-wrap reveal">
+          <span class="about-skill">Communication</span>
+          <span class="about-skill">Creative Problem Solving</span>
+          <span class="about-skill">Project Management</span>
+          <span class="about-skill">Time Management</span>
+          <span class="about-skill">Brand Strategy</span>
+        </div>
+
+        <!-- Experience -->
+        <div class="about-skills-title reveal" style="margin-top:10px;">Experience</div>
+        <div class="about-exp-grid reveal">
+          <div class="about-exp-card">
+            <div class="about-exp-role">Graphic Designer / Video Editor</div>
+            <div class="about-exp-company">Skills Share Hub — PITB Incubation Centre</div>
+            <div class="about-exp-date">Aug 2024 — Feb 2025</div>
+            <div class="about-exp-desc">Designed social media graphics, event posters, and promotional videos for a startup at Air University Kamra's incubation centre under the Regional Plan 9 Project.</div>
+          </div>
+          <div class="about-exp-card">
+            <div class="about-exp-role">Graphic Designer</div>
+            <div class="about-exp-company">Creative Edge</div>
+            <div class="about-exp-date">Sep 2023 — Oct 2024</div>
+            <div class="about-exp-desc">Developed comprehensive media strategies resulting in a 40% increase in online engagement. Created brochures, flyers, social media graphics, and storytelling video content.</div>
+          </div>
+        </div>
+
+        <!-- Key Projects -->
+        <div class="about-skills-title reveal" style="margin-top:36px;">Notable Projects</div>
+        <div class="about-exp-grid reveal">
+          <div class="about-exp-card">
+            <div class="about-exp-role">AirAura 2025 — University Festival</div>
+            <div class="about-exp-company">Lead Designer — Air University</div>
+            <div class="about-exp-desc">Developed the complete visual identity for Air University's flagship national event — from posters and brochures to standees, ID cards, and social media campaigns across all platforms.</div>
+          </div>
+          <div class="about-exp-card">
+            <div class="about-exp-role">Obscurium — Crypto Project</div>
+            <div class="about-exp-company">Brand Designer — Creative Edge</div>
+            <div class="about-exp-desc">Shaped the project's visual identity by designing a cohesive social media series and a professional pitch deck with creative layouts and infographics.</div>
+          </div>
+        </div>
+
+        <!-- Education -->
+        <div class="about-skills-title reveal" style="margin-top:36px;">Education</div>
+        <div class="about-edu reveal">
+          <div class="about-edu-icon">🎓</div>
+          <div>
+            <div class="about-edu-degree">Bachelor of Computer Science</div>
+            <div class="about-edu-uni">Air University, Aerospace &amp; Aviation Campus, Kamra — 2022 – Present</div>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
