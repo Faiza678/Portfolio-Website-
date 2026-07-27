@@ -89,12 +89,17 @@
   .stat-label{font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-top:4px;font-weight:500;}
 
   /* Reveal utility */
-  .reveal{opacity:0;transform:translateY(50px);transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1);will-change:transform, opacity;}
+  .reveal{opacity:0;transform:translateY(50px);transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1);}
   .reveal.in{opacity:1;transform:translateY(0);}
-  .reveal-l{opacity:0;transform:translateX(-60px);transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1);will-change:transform, opacity;}
+  .reveal-l{opacity:0;transform:translateX(-60px);transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1);}
   .reveal-l.in{opacity:1;transform:translateX(0);}
-  .reveal-r{opacity:0;transform:translateX(60px);transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1);will-change:transform, opacity;}
+  .reveal-r{opacity:0;transform:translateX(60px);transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1);}
   .reveal-r.in{opacity:1;transform:translateX(0);}
+  @media(max-width:768px){
+    .reveal{transform:translateY(20px);transition-duration:.6s;}
+    .reveal-l{transform:translateX(-25px);transition-duration:.6s;}
+    .reveal-r{transform:translateX(25px);transition-duration:.6s;}
+  }
 
   /* Section heading */
   .eyebrow{display:flex;align-items:center;gap:16px;margin-bottom:18px;}
@@ -1214,7 +1219,9 @@
     });
   });
   
+  let radarReady = false;
   function updateRadar(){
+    if (!radarReady) return;
     let idx = 0;
     const vhHalf = window.innerHeight * 0.5;
     targets.forEach((t, i)=>{
@@ -1222,7 +1229,6 @@
     });
     dots.forEach((d, i)=> d.classList.toggle('active', i === idx));
   }
-  updateRadar();
 
   // Consolidated Scroll Listener with requestAnimationFrame and Passive Events
   const scan = document.getElementById('scan');
@@ -1250,16 +1256,25 @@
     }
   }, { passive: true });
 
-  // Scroll reveal
-  const io = new IntersectionObserver((entries)=>{
-    entries.forEach(e=>{
-      if(e.isIntersecting){
-        e.target.classList.add('in');
-        io.unobserve(e.target);
-      }
-    });
-  }, {threshold:0.1});
-  document.querySelectorAll('.reveal, .reveal-l, .reveal-r').forEach(el=>io.observe(el));
+  // Delay reveal observers and radar activation so page layout settles first
+  setTimeout(()=>{
+    // Scroll reveal
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{
+        if(e.isIntersecting){
+          e.target.classList.add('in');
+          io.unobserve(e.target);
+        }
+      });
+    }, {threshold:0.08});
+    document.querySelectorAll('.reveal, .reveal-l, .reveal-r').forEach(el=>io.observe(el));
+
+    // Activate radar after reveals have settled
+    setTimeout(()=>{
+      radarReady = true;
+      updateRadar();
+    }, 600);
+  }, 300);
 
   // Count-up stats
   const counters = document.querySelectorAll('.stat-num');
