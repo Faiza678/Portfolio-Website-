@@ -574,31 +574,47 @@
     font-family:'Orbitron',monospace;font-size:12px;letter-spacing:4px;
     text-transform:uppercase;color:var(--magenta);margin-bottom:14px;font-weight:700;
   }
-  .about-skills-wrap{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:36px;}
+  .about-skills-wrap{display:flex;flex-wrap:wrap;gap:16px;margin-bottom:36px;}
   @media(max-width:900px){.about-skills-wrap{justify-content:center;}}
-  .about-skill{
-    display:inline-flex;align-items:center;gap:10px;
-    padding:9px 20px;border-radius:30px;
-    background:linear-gradient(135deg,rgba(168,85,247,.12),rgba(255,110,199,.06));
-    border:1px solid rgba(168,85,247,.3);
-    font-size:13px;font-weight:600;color:var(--ink);letter-spacing:1px;
-    transition:all .3s cubic-bezier(.2,.8,.2,1);
-    box-shadow:0 4px 15px rgba(0,0,0,.2);
+
+  .skill-card{
+    position:relative;display:flex;flex-direction:column;align-items:center;gap:10px;
+    width:90px;padding:20px 10px 14px;border-radius:18px;
+    background:rgba(255,255,255,.04);
+    border:1px solid rgba(168,85,247,.2);
+    cursor:default;
+    transition:all .4s cubic-bezier(.2,.8,.2,1);
   }
-  .about-skill:hover{
-    border-color:var(--magenta);
-    background:linear-gradient(135deg,rgba(255,110,199,.2),rgba(168,85,247,.25));
-    color:#fff;
-    transform:translateY(-3px) scale(1.04);
-    box-shadow:0 8px 25px rgba(168,85,247,.35), 0 0 15px rgba(255,110,199,.2);
+  .skill-card::before{
+    content:'';position:absolute;inset:-1px;border-radius:18px;
+    background:var(--brand-glow);opacity:0;
+    filter:blur(16px);z-index:-1;
+    transition:opacity .4s ease;
   }
-  .about-skill-icon{
-    width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;
-    flex-shrink:0;transition:transform .3s ease;
+  .skill-card:hover{transform:translateY(-6px) scale(1.06);border-color:var(--brand-color);}
+  .skill-card:hover::before{opacity:1;}
+
+  .skill-card-icon{
+    width:36px;height:36px;display:flex;align-items:center;justify-content:center;
+    transition:transform .4s cubic-bezier(.2,.8,.2,1);
   }
-  .about-skill:hover .about-skill-icon{
-    transform:scale(1.2) rotate(-5deg);
+  .skill-card:hover .skill-card-icon{transform:scale(1.15) rotate(-5deg);}
+  .skill-card-icon svg{width:36px;height:36px;}
+
+  .skill-card-name{
+    font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;
+    color:var(--muted);text-align:center;line-height:1.3;
+    transition:color .3s ease;
   }
+  .skill-card:hover .skill-card-name{color:var(--brand-color);}
+
+  /* Brand colors */
+  .skill-ps{--brand-color:#31A8FF;--brand-glow:rgba(49,168,255,.25);}
+  .skill-canva{--brand-color:#00C4CC;--brand-glow:rgba(0,196,204,.25);}
+  .skill-figma{--brand-color:#A259FF;--brand-glow:rgba(162,89,255,.25);}
+  .skill-capcut{--brand-color:#FFF;--brand-glow:rgba(255,255,255,.15);}
+  .skill-unity{--brand-color:#FFF;--brand-glow:rgba(255,255,255,.15);}
+  .skill-voice{--brand-color:#FF6EC7;--brand-glow:rgba(255,110,199,.25);}
 
   .about-exp-grid{
     display:grid;grid-template-columns:1fr 1fr;
@@ -1000,12 +1016,37 @@
         <!-- Skills -->
         <div class="about-skills-title reveal">Core Skills &amp; Tools</div>
         <div class="about-skills-wrap reveal">
-          <span class="about-skill"><span class="about-skill-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="5" fill="#001E36"/><path d="M6 16.5V7.5H9.25C10.7 7.5 11.75 8.3 11.75 9.7C11.75 11.15 10.65 11.95 9.25 11.95H7.75V16.5H6ZM7.75 10.6H9.15C9.85 10.6 10.25 10.25 10.25 9.7C10.25 9.15 9.85 8.8 9.15 8.8H7.75V10.6ZM13.1 16.5V14.8C13.6 15.3 14.35 15.65 15.2 15.65C16.5 15.65 17.2 14.85 17.2 13.8C17.2 11.8 14.6 11.7 14.6 10.75C14.6 10.3 15 10.05 15.5 10.05C16.15 10.05 16.7 10.3 17.15 10.75L18 9.5C17.3 8.9 16.5 8.65 15.5 8.65C14.15 8.65 13.1 9.5 13.1 10.8C13.1 12.8 15.7 12.8 15.7 13.9C15.7 14.3 15.2 14.55 14.65 14.55C13.9 14.55 13.2 14.15 12.7 13.5L12 14.7C12.3 15 12.6 15.3 13.1 16.5Z" fill="#31A8FF"/></svg></span> Adobe Photoshop</span>
-          <span class="about-skill"><span class="about-skill-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="12" fill="#00C4CC"/><path d="M11.6 15.5C8.8 15.5 7 13.6 7 10.8C7 8 8.8 6.1 11.7 6.1C13.5 6.1 14.8 6.9 15.4 8.2L14 9.1C13.5 8.2 12.7 7.7 11.6 7.7C9.9 7.7 8.6 9 8.6 10.8C8.6 12.6 9.9 13.9 11.6 13.9C12.7 13.9 13.6 13.3 14.1 12.4L15.5 13.3C14.8 14.7 13.4 15.5 11.6 15.5Z" fill="white"/></svg></span> Canva Pro</span>
-          <span class="about-skill"><span class="about-skill-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M8 24C10.2091 24 12 22.2091 12 20V16H8C5.79086 16 4 17.7909 4 20C4 22.2091 5.79086 24 8 24Z" fill="#0ACF83"/><path d="M4 12C4 9.79086 5.79086 8 8 8H12V16H8C5.79086 16 4 14.2091 4 12Z" fill="#A259FF"/><path d="M4 4C4 1.79086 5.79086 0 8 0H12V8H8C5.79086 8 4 6.20914 4 4Z" fill="#F24E1E"/><path d="M12 0H16C18.2091 0 20 1.79086 20 4C20 6.20914 18.2091 8 16 8H12V0Z" fill="#FF7262"/><path d="M20 12C20 14.2091 18.2091 16 16 16C13.7909 16 12 14.2091 12 12C12 9.79086 13.7909 8 16 8C18.2091 8 20 9.79086 20 12Z" fill="#1ABCFE"/></svg></span> Figma</span>
-          <span class="about-skill"><span class="about-skill-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="5" fill="#111"/><path d="M6 7L11 12L6 17M18 7L13 12L18 17" stroke="#FFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span> CapCut Pro</span>
-          <span class="about-skill"><span class="about-skill-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2L3 7V17L12 22L21 17V7L12 2ZM12 4.3L18.8 8.1L12 11.9L5.2 8.1L12 4.3ZM5 9.7L11 13.1V19.8L5 16.4V9.7ZM13 19.8V13.1L19 9.7V16.4L13 19.8Z" fill="#FFFFFF"/></svg></span> Unity</span>
-          <span class="about-skill"><span class="about-skill-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 14C13.66 14 15 12.66 15 11V5C15 3.34 13.66 2 12 2C10.34 2 9 3.34 9 5V11C9 12.66 10.34 14 12 14ZM19 11C19 14.53 16.39 17.44 13 17.93V21H11V17.93C7.61 17.44 5 14.53 5 11H7C7 13.76 9.24 16 12 16C14.76 16 17 13.76 17 11H19Z" fill="#FF6EC7"/></svg></span> Voiceover</span>
+
+          <div class="skill-card skill-ps">
+            <div class="skill-card-icon"><svg viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="5" fill="#001E36"/><path d="M6 16.5V7.5H9.25C10.7 7.5 11.75 8.3 11.75 9.7C11.75 11.15 10.65 11.95 9.25 11.95H7.75V16.5H6ZM7.75 10.6H9.15C9.85 10.6 10.25 10.25 10.25 9.7C10.25 9.15 9.85 8.8 9.15 8.8H7.75V10.6ZM13.1 16.5V14.8C13.6 15.3 14.35 15.65 15.2 15.65C16.5 15.65 17.2 14.85 17.2 13.8C17.2 11.8 14.6 11.7 14.6 10.75C14.6 10.3 15 10.05 15.5 10.05C16.15 10.05 16.7 10.3 17.15 10.75L18 9.5C17.3 8.9 16.5 8.65 15.5 8.65C14.15 8.65 13.1 9.5 13.1 10.8C13.1 12.8 15.7 12.8 15.7 13.9C15.7 14.3 15.2 14.55 14.65 14.55C13.9 14.55 13.2 14.15 12.7 13.5L12 14.7C12.3 15 12.6 15.3 13.1 16.5Z" fill="#31A8FF"/></svg></div>
+            <div class="skill-card-name">Photoshop</div>
+          </div>
+
+          <div class="skill-card skill-canva">
+            <div class="skill-card-icon"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="12" fill="#00C4CC"/><path d="M11.6 15.5C8.8 15.5 7 13.6 7 10.8C7 8 8.8 6.1 11.7 6.1C13.5 6.1 14.8 6.9 15.4 8.2L14 9.1C13.5 8.2 12.7 7.7 11.6 7.7C9.9 7.7 8.6 9 8.6 10.8C8.6 12.6 9.9 13.9 11.6 13.9C12.7 13.9 13.6 13.3 14.1 12.4L15.5 13.3C14.8 14.7 13.4 15.5 11.6 15.5Z" fill="white"/></svg></div>
+            <div class="skill-card-name">Canva Pro</div>
+          </div>
+
+          <div class="skill-card skill-figma">
+            <div class="skill-card-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M8 24C10.2091 24 12 22.2091 12 20V16H8C5.79086 16 4 17.7909 4 20C4 22.2091 5.79086 24 8 24Z" fill="#0ACF83"/><path d="M4 12C4 9.79086 5.79086 8 8 8H12V16H8C5.79086 16 4 14.2091 4 12Z" fill="#A259FF"/><path d="M4 4C4 1.79086 5.79086 0 8 0H12V8H8C5.79086 8 4 6.20914 4 4Z" fill="#F24E1E"/><path d="M12 0H16C18.2091 0 20 1.79086 20 4C20 6.20914 18.2091 8 16 8H12V0Z" fill="#FF7262"/><path d="M20 12C20 14.2091 18.2091 16 16 16C13.7909 16 12 14.2091 12 12C12 9.79086 13.7909 8 16 8C18.2091 8 20 9.79086 20 12Z" fill="#1ABCFE"/></svg></div>
+            <div class="skill-card-name">Figma</div>
+          </div>
+
+          <div class="skill-card skill-capcut">
+            <div class="skill-card-icon"><svg viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="5" fill="#111"/><path d="M6 7L11 12L6 17M18 7L13 12L18 17" stroke="#FFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="skill-card-name">CapCut Pro</div>
+          </div>
+
+          <div class="skill-card skill-unity">
+            <div class="skill-card-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2L3 7V17L12 22L21 17V7L12 2ZM12 4.3L18.8 8.1L12 11.9L5.2 8.1L12 4.3ZM5 9.7L11 13.1V19.8L5 16.4V9.7ZM13 19.8V13.1L19 9.7V16.4L13 19.8Z" fill="#FFFFFF"/></svg></div>
+            <div class="skill-card-name">Unity</div>
+          </div>
+
+          <div class="skill-card skill-voice">
+            <div class="skill-card-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M12 14C13.66 14 15 12.66 15 11V5C15 3.34 13.66 2 12 2C10.34 2 9 3.34 9 5V11C9 12.66 10.34 14 12 14ZM19 11C19 14.53 16.39 17.44 13 17.93V21H11V17.93C7.61 17.44 5 14.53 5 11H7C7 13.76 9.24 16 12 16C14.76 16 17 13.76 17 11H19Z" fill="#FF6EC7"/></svg></div>
+            <div class="skill-card-name">Voiceover</div>
+          </div>
+
         </div>
 
         <!-- Education -->
