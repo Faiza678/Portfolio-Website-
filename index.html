@@ -68,7 +68,7 @@
   .badge{border:1px solid rgba(168,85,247,.45);background:rgba(168,85,247,.1);border-radius:40px;padding:8px 20px;font-size:13px;letter-spacing:3px;text-transform:uppercase;color:#d9b8ff;font-weight:600;}
   .hero-title{font-family:'Orbitron',monospace;font-weight:900;font-size:clamp(64px,11vw,160px);line-height:.95;letter-spacing:-2px;background:linear-gradient(135deg,#fff 0%,#dcb4ff 35%,#a855f7 70%,#6b21c9 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;opacity:0;animation:fadeUp 1s .35s forwards;will-change:transform;}
   .hero-year{font-family:'Poppins',sans-serif;font-style:italic;font-weight:600;font-size:clamp(30px,4vw,48px);color:var(--magenta);margin-top:6px;opacity:0;animation:fadeUp 1s .5s forwards;will-change:transform;}
-  .hero-tag{margin-top:26px;font-size:16px;letter-spacing:5px;text-transform:uppercase;color:var(--ink);font-weight:500;}
+  .hero-tag{margin-top:26px;font-size:16px;letter-spacing:5px;text-transform:uppercase;color:var(--ink);font-weight:500;min-height:32px;}
   .hero-desc{max-width:640px;margin-top:30px;font-size:20px;line-height:1.6;color:var(--ink);opacity:0;animation:fadeUp 1s .8s forwards;}
   .hero-desc b{color:#fff;font-weight:600;}
   .scroll-cue{position:absolute;bottom:46px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;opacity:0;animation:fadeUp 1s 1.2s forwards;}
@@ -117,9 +117,9 @@
   .brief-label{font-size:16px;color:var(--ink);margin-top:6px;font-weight:500;}
 
   /* Gallery frame (the hover-tilt design cards) */
-  .frame{position:relative;border-radius:18px;overflow:hidden;border:1px solid rgba(168,85,247,.3);box-shadow:0 30px 70px rgba(70,0,140,.4);transform-style:preserve-3d;transition:transform .6s cubic-bezier(.2,.8,.2,1), box-shadow .4s ease, opacity .7s ease;cursor:pointer;opacity:0;transform:perspective(900px) rotateX(18deg) rotateY(-8deg) translateY(60px) scale(0.93);will-change:transform, opacity;min-height:200px;}
+  .frame{position:relative;border-radius:18px;overflow:hidden;border:1px solid rgba(168,85,247,.3);box-shadow:0 30px 70px rgba(70,0,140,.4);transform-style:preserve-3d;transition:transform .6s cubic-bezier(.2,.8,.2,1), box-shadow .4s ease, opacity .7s ease;cursor:pointer;opacity:0;transform:perspective(900px) rotateX(18deg) rotateY(-8deg) translateY(60px) scale(0.93);will-change:transform, opacity;}
   .frame.frame-revealed{opacity:1;transform:perspective(900px) rotateX(0deg) rotateY(0deg) translateY(0px) scale(1);}
-  .frame img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;transition:transform .6s ease,filter .5s ease;}
+  .frame img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .6s ease,filter .5s ease;}
   .frame:hover img{transform:scale(1.06);}
   .frame .glare{position:absolute;inset:0;background:radial-gradient(circle at var(--mx,50%) var(--my,50%),rgba(255,255,255,.16),transparent 45%);opacity:0;transition:opacity .3s ease;pointer-events:none;}
   .frame:hover .glare{opacity:1;}
@@ -206,10 +206,9 @@
 
   /* Scroll progress ring */
   #progress-ring{position:fixed;bottom:28px;right:28px;z-index:90;width:48px;height:48px;pointer-events:none;}
-  @media(max-width:768px){#progress-ring{display:none;}}
   #progress-ring circle{fill:none;stroke-width:3;}
   #progress-ring .track{stroke:rgba(168,85,247,.15);}
-  #progress-ring .fill{stroke:var(--magenta);stroke-dasharray:132;stroke-dashoffset:132;stroke-linecap:round;transform:rotate(-90deg);transform-origin:center;transition:stroke-dashoffset .3s linear;filter:drop-shadow(0 0 4px var(--magenta));}
+  #progress-ring .fill{stroke:var(--magenta);stroke-dasharray:132;stroke-dashoffset:132;stroke-linecap:round;transform:rotate(-90deg);transform-origin:center;transition:stroke-dashoffset .1s linear;filter:drop-shadow(0 0 4px var(--magenta));}
 
   /* Section entry flash */
   .eyebrow.in .eyebrow-num{animation:numFlash .5s ease;}
@@ -901,7 +900,7 @@
       <div class="result-item"><div class="result-val">A3</div><div class="result-key">Print Size</div></div>
     </div>
     <div style="display:flex;justify-content:center;margin-top:48px;">
-      <div class="frame reveal" data-full="images/modules_competitions.jpg" style="max-width:820px;width:100%;cursor:pointer;" onclick="openLightbox(this)">
+      <div class="frame reveal" data-full="images/modules_competitions.jpg" style="max-width:820px;width:100%;cursor:pointer;">
         <img loading="lazy" src="images/modules_competitions.jpg" alt="AirAura 2025 Modules &amp; Competitions" style="width:100%;display:block;border-radius:18px;">
         <div class="frame-overlay"><span class="frame-zoom">&#x26F6; EXPAND</span></div>
       </div>
@@ -910,7 +909,7 @@
 
   <!-- TIMELINE -->
   <section id="timeline">
-    <div class="eyebrow reveal"><span class="eyebrow-num">06 / SCHEDULE</span><div class="eyebrow-line"></div></div>
+    <div class="eyebrow reveal"><span class="eyebrow-num">07 / SCHEDULE</span><div class="eyebrow-line"></div></div>
     <h2 class="title reveal">Event Timeline</h2>
     <p class="subtitle reveal">Day-wise activity tables — venue &amp; timing at a glance.</p>
     <div class="grid2">
@@ -929,7 +928,7 @@
 
   <!-- PASSES & DIGITAL COLLATERAL SECTION -->
   <section id="print">
-    <div class="eyebrow reveal"><span class="eyebrow-num">07 / PASSES &amp; DIGITAL COLLATERAL</span><div class="eyebrow-line"></div></div>
+    <div class="eyebrow reveal"><span class="eyebrow-num">08 / PASSES &amp; DIGITAL COLLATERAL</span><div class="eyebrow-line"></div></div>
     <h2 class="title reveal">Visitor Pass, Standee &amp; ID</h2>
     <p class="subtitle reveal">Digital collateral templates for entry, wayfinding &amp; identity system.</p>
     <div class="insight reveal">
@@ -962,7 +961,7 @@
 
   <!-- BRAND SYSTEM -->
   <section id="brand">
-    <div class="eyebrow reveal"><span class="eyebrow-num">08 / BRAND SYSTEM</span><div class="eyebrow-line"></div></div>
+    <div class="eyebrow reveal"><span class="eyebrow-num">09 / BRAND SYSTEM</span><div class="eyebrow-line"></div></div>
     <h2 class="title reveal">Colour &amp; Type</h2>
     <p class="subtitle reveal">Consistent hues and faces carried across every touchpoint.</p>
 
@@ -989,7 +988,7 @@
 
   <!-- ABOUT ME SECTION -->
   <section id="about-me">
-    <div class="eyebrow reveal"><span class="eyebrow-num">09 / THE DESIGNER</span><div class="eyebrow-line"></div></div>
+    <div class="eyebrow reveal"><span class="eyebrow-num">10 / THE DESIGNER</span><div class="eyebrow-line"></div></div>
     <h2 class="title reveal">About <span style="color:var(--magenta);">Me</span></h2>
     <p class="subtitle reveal">The creative mind behind AirAura's brand identity.</p>
 
@@ -1071,7 +1070,7 @@
   <!-- CONTACT SECTION -->
   <section id="contact">
     <div class="eyebrow reveal">
-      <div class="eyebrow-num">10</div>
+      <div class="eyebrow-num">11</div>
       <div class="eyebrow-line"></div>
     </div>
     <h2 class="title reveal">Let's <span style="color:var(--magenta);">Connect</span></h2>
@@ -1142,13 +1141,12 @@
   // Detect touch device
   const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 
-  // Custom cursor setup (only on non-touch devices)
+  // Custom cursor setup
   const dot = document.getElementById('cursor-dot');
   const ring = document.getElementById('cursor-ring');
   if (isTouchDevice) {
     if (dot) dot.style.display = 'none';
     if (ring) ring.style.display = 'none';
-    // Remove the global *{cursor:none} style if on touch device
     const styleEl = document.createElement('style');
     styleEl.innerHTML = '*{cursor:auto !important;}';
     document.head.appendChild(styleEl);
@@ -1158,21 +1156,25 @@
     document.addEventListener('mousemove', e => { 
       mx = e.clientX; 
       my = e.clientY; 
-      dot.style.left = mx + 'px'; 
-      dot.style.top = my + 'px'; 
+      if(dot){
+        dot.style.left = mx + 'px'; 
+        dot.style.top = my + 'px'; 
+      }
     });
     (function lerpRing(){
       rx += (mx - rx) * 0.12;
       ry += (my - ry) * 0.12;
-      ring.style.left = rx + 'px';
-      ring.style.top  = ry + 'px';
+      if(ring){
+        ring.style.left = rx + 'px';
+        ring.style.top  = ry + 'px';
+      }
       requestAnimationFrame(lerpRing);
     })();
   }
 
-  // Starfield (completely disabled on touch/mobile devices for heavy performance gains)
+  // Starfield canvas
   const canvas = document.getElementById('stars');
-  if (isTouchDevice) {
+  if (isTouchDevice || !canvas) {
     if (canvas) canvas.style.display = 'none';
   } else {
     const ctx = canvas.getContext('2d');
@@ -1216,7 +1218,8 @@
   const targets = [...dots].map(d=>document.querySelector(d.dataset.target));
   dots.forEach(d=>{
     d.addEventListener('click', ()=>{
-      document.querySelector(d.dataset.target).scrollIntoView({behavior:'smooth'});
+      const targetEl = document.querySelector(d.dataset.target);
+      if(targetEl) targetEl.scrollIntoView({behavior:'smooth'});
     });
   });
   
@@ -1231,7 +1234,7 @@
     dots.forEach((d, i)=> d.classList.toggle('active', i === idx));
   }
 
-  // Consolidated Scroll Listener with requestAnimationFrame and Passive Events
+  // FIXED SCROLL PROGRESS LOGIC (Jhatkey aur flickering control)
   const scan = document.getElementById('scan');
   const ringFill = document.getElementById('ring-fill');
   const circumference = 2 * Math.PI * 21;
@@ -1239,13 +1242,13 @@
 
   let ticking = false;
   function handleScrollUpdate() {
-    const scrolled = window.scrollY;
-    const max = document.documentElement.scrollHeight - window.innerHeight;
-    if (max > 0) {
-      const progress = scrolled / max;
-      if (scan) scan.style.width = (progress * 100) + '%';
-      if (ringFill) ringFill.style.strokeDashoffset = circumference * (1 - progress);
-    }
+    const scrolled = Math.max(0, window.scrollY || document.documentElement.scrollTop);
+    const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+    const progress = Math.min(1, Math.max(0, scrolled / maxScroll));
+    
+    if (scan) scan.style.width = (progress * 100) + '%';
+    if (ringFill) ringFill.style.strokeDashoffset = circumference * (1 - progress);
+    
     updateRadar();
     ticking = false;
   }
@@ -1257,25 +1260,23 @@
     }
   }, { passive: true });
 
-  // Delay reveal observers and radar activation so page layout settles first
-  setTimeout(()=>{
-    // Scroll reveal
-    const io = new IntersectionObserver((entries)=>{
-      entries.forEach(e=>{
-        if(e.isIntersecting){
-          e.target.classList.add('in');
-          io.unobserve(e.target);
-        }
-      });
-    }, {threshold:0.08});
-    document.querySelectorAll('.reveal, .reveal-l, .reveal-r').forEach(el=>io.observe(el));
-
-    // Activate radar after reveals have settled
+  // Delay observers until DOM fully settles
+  window.addEventListener('load', ()=>{
     setTimeout(()=>{
+      const io = new IntersectionObserver((entries)=>{
+        entries.forEach(e=>{
+          if(e.isIntersecting){
+            e.target.classList.add('in');
+            io.unobserve(e.target);
+          }
+        });
+      }, {threshold:0.05});
+      document.querySelectorAll('.reveal, .reveal-l, .reveal-r').forEach(el=>io.observe(el));
+
       radarReady = true;
-      updateRadar();
-    }, 600);
-  }, 300);
+      handleScrollUpdate();
+    }, 200);
+  });
 
   // Count-up stats
   const counters = document.querySelectorAll('.stat-num');
@@ -1296,27 +1297,22 @@
         cio.unobserve(el);
       }
     });
-  }, {threshold:0.6});
+  }, {threshold:0.4});
   counters.forEach(c=>cio.observe(c));
 
-  // Scroll-triggered 3d reveal for frames
+  // Frame 3D reveal
   const frameRevealIO = new IntersectionObserver((entries)=>{
-    entries.forEach((e, i)=>{
+    entries.forEach((e)=>{
       if(e.isIntersecting){
-        const delay = (e.target._frameIndex || 0) * 120;
-        setTimeout(()=>{
-          e.target.classList.add('frame-revealed');
-        }, delay);
+        e.target.classList.add('frame-revealed');
         frameRevealIO.unobserve(e.target);
       }
     });
-  }, {threshold:0.12});
-  document.querySelectorAll('.frame').forEach((frame, idx)=>{
-    frame._frameIndex = idx;
-    frameRevealIO.observe(frame);
-  });
+  }, {threshold:0.05});
+  document.querySelectorAll('.frame').forEach(frame=>frameRevealIO.observe(frame));
 
-  // Frame tilt, glare + click (disabled completely on mobile/touch to prevent heavy CPU loads)
+  // Frame tilt & Lightbox
+  const lightbox = document.getElementById('lightbox');
   document.querySelectorAll('.frame').forEach(frame=>{
     if (!isTouchDevice) {
       frame.addEventListener('mousemove', (e)=>{
@@ -1324,100 +1320,36 @@
         const r = frame.getBoundingClientRect();
         const x = (e.clientX - r.left)/r.width;
         const y = (e.clientY - r.top)/r.height;
-        const rotX = (0.5-y)*10;
-        const rotY = (x-0.5)*10;
-        frame.style.transform = `perspective(900px) rotateX(${rotX}deg) rotateY(${rotY}deg) translateY(-6px) scale(1.02)`;
-        frame.style.boxShadow = `0 40px 90px rgba(168,85,247,0.5), 0 0 30px rgba(255,110,199,0.2)`;
+        const rotX = (0.5-y)*8;
+        const rotY = (x-0.5)*8;
+        frame.style.transform = `perspective(900px) rotateX(${rotX}deg) rotateY(${rotY}deg) translateY(-4px)`;
         frame.style.setProperty('--mx', (x*100)+'%');
         frame.style.setProperty('--my', (y*100)+'%');
       });
       frame.addEventListener('mouseleave', ()=>{
         if(!frame.classList.contains('frame-revealed')) return;
-        frame.style.transform = 'perspective(900px) rotateX(0) rotateY(0) translateY(0) scale(1)';
-        frame.style.boxShadow = '';
+        frame.style.transform = 'perspective(900px) rotateX(0) rotateY(0) translateY(0)';
       });
     }
     frame.addEventListener('click', ()=>{
       const src = frame.dataset.full;
-      if(!src) return;
+      if(!src || !lightbox) return;
       lightbox.querySelector('img').src = src;
       lightbox.classList.add('open');
     });
   });
 
-  // Lightbox
-  const lightbox = document.getElementById('lightbox');
   if (lightbox) {
-    document.getElementById('lightbox-close').addEventListener('click', ()=> lightbox.classList.remove('open'));
+    const closeBtn = document.getElementById('lightbox-close');
+    if(closeBtn) closeBtn.addEventListener('click', ()=> lightbox.classList.remove('open'));
     lightbox.addEventListener('click', (e)=>{ if(e.target===lightbox) lightbox.classList.remove('open'); });
     document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') lightbox.classList.remove('open'); });
   }
 
-  // Click ripple (disabled on touch devices to prevent lag)
-  if (!isTouchDevice) {
-    document.addEventListener('click', e => {
-      const r = document.createElement('div');
-      r.className = 'ripple';
-      r.style.cssText = `left:${e.clientX}px;top:${e.clientY}px;width:10px;height:10px;`;
-      document.body.appendChild(r);
-      setTimeout(()=>r.remove(), 700);
-    });
-  }
-
-  // Floating orbs (completely disabled on touch/mobile for smooth scroll performance)
-  const orbContainer = document.getElementById('orbs-container');
-  const orbColors = [
-    'rgba(168,85,247,0.18)', 'rgba(255,110,199,0.14)',
-    'rgba(107,33,201,0.20)', 'rgba(255,209,102,0.08)',
-    'rgba(74,26,128,0.22)'
-  ];
-  function spawnOrb(){
-    if (!orbContainer || isTouchDevice) return;
-    const orb = document.createElement('div');
-    orb.className = 'orb';
-    const size = 120 + Math.random() * 280;
-    const tx = (Math.random()-0.5)*400;
-    const dur = 12 + Math.random()*18;
-    orb.style.cssText = `
-      width:${size}px;height:${size}px;
-      left:${Math.random()*100}%;
-      bottom:${-size}px;
-      background:${orbColors[Math.floor(Math.random()*orbColors.length)]};
-      --tx:${tx}px;
-      animation-duration:${dur}s;
-      animation-delay:${Math.random()*dur}s;
-    `;
-    orbContainer.appendChild(orb);
-    setTimeout(()=>orb.remove(), (dur+5)*1000);
-  }
-  if (!isTouchDevice) {
-    const maxOrbs = 6;
-    for(let i=0; i<maxOrbs; i++) spawnOrb();
-    setInterval(spawnOrb, 3500);
-  } else {
-    if (orbContainer) orbContainer.style.display = 'none';
-  }
-
-  // Hero mouse parallax (disabled on touch devices)
-  if (!isTouchDevice) {
-    const heroEl = document.querySelector('.hero');
-    const heroTitle = document.querySelector('.hero-title');
-    const heroYear  = document.querySelector('.hero-year');
-    const heroBadges = document.querySelector('.hero-badges');
-    document.addEventListener('mousemove', e => {
-      if(!heroEl) return;
-      const cx = window.innerWidth/2, cy = window.innerHeight/2;
-      const dx = (e.clientX - cx)/cx;
-      const dy = (e.clientY - cy)/cy;
-      if(heroTitle)  heroTitle.style.transform  = `translate(${dx*-14}px,${dy*-8}px)`;
-      if(heroYear)   heroYear.style.transform   = `translate(${dx*-8}px,${dy*-5}px)`;
-      if(heroBadges) heroBadges.style.transform = `translate(${dx*-5}px,${dy*-3}px)`;
-    });
-  }
-
-  // Typewriter effect on hero-tag
+  // Typewriter effect on hero-tag with FIXED HEIGHT to prevent document jitter
   const heroTag = document.querySelector('.hero-tag');
   if(heroTag){
+    heroTag.style.minHeight = '32px'; // Height lock so text doesn't shake page layout
     const words = ['Innovation', 'Competition', 'Collaboration', 'Excellence', 'Creativity'];
     let wIdx = 0, cIdx = 0, deleting = false;
     heroTag.innerHTML = '<span class="tw-text"></span>';
@@ -1433,102 +1365,8 @@
       }
       setTimeout(typeWrite, deleting ? 55 : 95);
     }
-    setTimeout(typeWrite, 1800);
+    setTimeout(typeWrite, 1200);
   }
-
-  // Magnetic badges (disabled on touch devices)
-  if (!isTouchDevice) {
-    document.querySelectorAll('.badge').forEach(badge => {
-      badge.addEventListener('mousemove', e => {
-        const r = badge.getBoundingClientRect();
-        const dx = (e.clientX - r.left - r.width/2) * 0.4;
-        const dy = (e.clientY - r.top  - r.height/2) * 0.4;
-        badge.style.transform = `translate(${dx}px,${dy}px) scale(1.06)`;
-      });
-      badge.addEventListener('mouseleave', () => {
-        badge.style.transform = '';
-      });
-    });
-  }
-
-  // Brief card mouse glow (disabled on touch devices)
-  if (!isTouchDevice) {
-    document.querySelectorAll('.brief-card').forEach(card => {
-      card.addEventListener('mousemove', e => {
-        const r = card.getBoundingClientRect();
-        const x = ((e.clientX - r.left)/r.width*100).toFixed(1);
-        const y = ((e.clientY - r.top)/r.height*100).toFixed(1);
-        card.style.setProperty('--cx', x+'%');
-        card.style.setProperty('--cy', y+'%');
-      });
-    });
-  }
-
-  // Section number flash on reveal
-  const revealObserverExtra = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if(e.isIntersecting){
-        const num = e.target.querySelector('.eyebrow-num');
-        if(num){ num.style.animation='none'; void num.offsetWidth; num.style.animation=''; }
-      }
-    });
-  }, {threshold:0.3});
-  document.querySelectorAll('.eyebrow').forEach(el => revealObserverExtra.observe(el));
-
-  // Contact card mouse glow (disabled on touch devices)
-  if (!isTouchDevice) {
-    document.querySelectorAll('.c-card').forEach(card => {
-      card.addEventListener('mousemove', e => {
-        const r = card.getBoundingClientRect();
-        card.style.setProperty('--cx', ((e.clientX - r.left)/r.width*100).toFixed(1)+'%');
-        card.style.setProperty('--cy', ((e.clientY - r.top)/r.height*100).toFixed(1)+'%');
-      });
-    });
-  }
-
-  // Process strip stagger
-  document.querySelectorAll('.process-step').forEach((step, i) => {
-    step.style.opacity = '0';
-    step.style.transform = 'translateY(20px)';
-    step.style.transition = 'all 0.5s ease';
-    const psio = new IntersectionObserver(entries => {
-      entries.forEach(e => {
-        if(e.isIntersecting){
-          setTimeout(() => {
-            step.style.opacity = '1';
-            step.style.transform = 'translateY(0)';
-          }, i * 100);
-          psio.unobserve(step);
-        }
-      });
-    }, {threshold:0.3});
-    psio.observe(step);
-  });
-
-  // Result item count-up
-  document.querySelectorAll('.result-val').forEach(el => {
-    const text = el.textContent.trim();
-    const num = parseInt(text);
-    if(isNaN(num)) return;
-    const suffix = text.replace(String(num),'');
-    el.textContent = '0' + suffix;
-    const rio = new IntersectionObserver(entries => {
-      entries.forEach(e => {
-        if(e.isIntersecting){
-          let cur = 0;
-          const step = Math.max(1, Math.round(num/25));
-          const tick = () => {
-            cur = Math.min(cur + step, num);
-            el.textContent = cur + suffix;
-            if(cur < num) requestAnimationFrame(tick);
-          };
-          tick();
-          rio.unobserve(el);
-        }
-      });
-    }, {threshold:0.5});
-    rio.observe(el);
-  });
 </script>
 
 </body>
