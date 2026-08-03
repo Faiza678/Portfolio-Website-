@@ -30,7 +30,11 @@
   html{scroll-behavior:smooth;-webkit-overflow-scrolling:touch;}
 
   body{
-    background: linear-gradient(160deg, #0d0520 0%, #08050f 40%, #120830 70%, #0a0418 100%);
+    background: 
+      radial-gradient(circle at 20% 20%, rgba(168, 85, 247, 0.12) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(255, 110, 199, 0.08) 0%, transparent 50%),
+      linear-gradient(160deg, #12072b 0%, #0a0518 45%, #150933 80%, #0d061f 100%);
+    background-attachment: fixed;
     color:#fff;
     font-family:'Rajdhani', sans-serif;
     font-size: 17px;
@@ -197,7 +201,10 @@
     #cursor-dot, #cursor-ring, #noise, #orbs-container, #stars { display: none !important; }
     
     body {
-      background: linear-gradient(160deg, #0d0520 0%, #08050f 40%, #120830 70%, #0a0418 100%) !important;
+      background: 
+        radial-gradient(circle at 20% 20%, rgba(168, 85, 247, 0.12) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(255, 110, 199, 0.08) 0%, transparent 50%),
+        linear-gradient(160deg, #12072b 0%, #0a0518 45%, #150933 80%, #0d061f 100%) !important;
       background-attachment: fixed !important;
     }
 
