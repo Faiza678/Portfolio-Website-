@@ -66,60 +66,60 @@
   .aurora-blob {
     position: absolute;
     border-radius: 50%;
-    filter: blur(75px);
-    opacity: 0.65;
+    filter: blur(100px);
+    opacity: 0.38;
     will-change: transform;
   }
 
   .aurora-1 {
-    top: -10%;
-    left: 10%;
-    width: 60vw;
-    height: 60vw;
-    max-width: 680px;
-    max-height: 680px;
-    background: radial-gradient(circle, rgba(168, 85, 247, 0.65) 0%, rgba(124, 58, 237, 0.3) 45%, transparent 70%);
-    animation: floatAurora1 10s ease-in-out infinite alternate;
+    top: -15%;
+    left: 15%;
+    width: 55vw;
+    height: 55vw;
+    max-width: 650px;
+    max-height: 650px;
+    background: radial-gradient(circle, rgba(168, 85, 247, 0.45) 0%, rgba(124, 58, 237, 0.2) 45%, transparent 70%);
+    animation: floatAurora1 20s ease-in-out infinite alternate;
   }
 
   .aurora-2 {
-    top: 30%;
-    right: -12%;
-    width: 55vw;
-    height: 55vw;
-    max-width: 620px;
-    max-height: 620px;
-    background: radial-gradient(circle, rgba(255, 110, 199, 0.55) 0%, rgba(168, 85, 247, 0.25) 45%, transparent 70%);
-    animation: floatAurora2 13s ease-in-out infinite alternate;
+    top: 35%;
+    right: -10%;
+    width: 50vw;
+    height: 50vw;
+    max-width: 600px;
+    max-height: 600px;
+    background: radial-gradient(circle, rgba(255, 110, 199, 0.35) 0%, rgba(168, 85, 247, 0.18) 45%, transparent 70%);
+    animation: floatAurora2 26s ease-in-out infinite alternate;
   }
 
   .aurora-3 {
-    bottom: 0%;
-    left: -10%;
-    width: 50vw;
-    height: 50vw;
-    max-width: 580px;
-    max-height: 580px;
-    background: radial-gradient(circle, rgba(147, 51, 234, 0.6) 0%, rgba(255, 209, 102, 0.2) 45%, transparent 70%);
-    animation: floatAurora3 11s ease-in-out infinite alternate;
+    bottom: 5%;
+    left: -8%;
+    width: 45vw;
+    height: 45vw;
+    max-width: 550px;
+    max-height: 550px;
+    background: radial-gradient(circle, rgba(124, 58, 237, 0.4) 0%, rgba(74, 26, 128, 0.2) 45%, transparent 70%);
+    animation: floatAurora3 22s ease-in-out infinite alternate;
   }
 
   @keyframes floatAurora1 {
-    0% { transform: translate(0, 0) scale(1) rotate(0deg); }
-    50% { transform: translate(140px, 90px) scale(1.25) rotate(30deg); }
-    100% { transform: translate(-90px, 150px) scale(0.88) rotate(60deg); }
+    0% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(90px, 70px) scale(1.12); }
+    100% { transform: translate(-70px, 110px) scale(0.92); }
   }
 
   @keyframes floatAurora2 {
-    0% { transform: translate(0, 0) scale(1) rotate(0deg); }
-    50% { transform: translate(-150px, -80px) scale(1.2) rotate(-30deg); }
-    100% { transform: translate(90px, -120px) scale(0.92) rotate(-60deg); }
+    0% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(-100px, -60px) scale(1.15); }
+    100% { transform: translate(60px, -90px) scale(0.9); }
   }
 
   @keyframes floatAurora3 {
-    0% { transform: translate(0, 0) scale(1) rotate(0deg); }
-    50% { transform: translate(120px, -90px) scale(1.28) rotate(45deg); }
-    100% { transform: translate(-90px, 70px) scale(0.85) rotate(90deg); }
+    0% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(80px, -70px) scale(1.18); }
+    100% { transform: translate(-60px, 50px) scale(0.88); }
   }
 
   /* Starfield canvas */
@@ -288,8 +288,6 @@
   /* Mobile Tweaks */
   @media(max-width:768px){
     *{cursor:auto !important;}
-    #ambient-aurora { display: block !important; opacity: 0.85; }
-    .aurora-blob { filter: blur(50px) !important; }
     #cursor-dot, #cursor-ring, #noise, #orbs-container, #stars { display: none !important; }
     
     body {
