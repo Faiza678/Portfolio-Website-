@@ -1106,6 +1106,7 @@
     const ctx = canvas.getContext('2d');
     let w = canvas.width = window.innerWidth;
     let h = canvas.height = window.innerHeight;
+    const isMobile = w <= 768 || ('ontouchstart' in window);
 
     let mouse = { x: w / 2, y: h / 2, targetX: w / 2, targetY: h / 2, active: false };
 
@@ -1120,15 +1121,23 @@
       mouse.active = true;
     });
 
-    // Interactive Constellation Particles
-    const numParticles = Math.min(Math.floor(w / 16), 90);
+    window.addEventListener('touchmove', (e) => {
+      if (e.touches && e.touches[0]) {
+        mouse.targetX = e.touches[0].clientX;
+        mouse.targetY = e.touches[0].clientY;
+        mouse.active = true;
+      }
+    }, { passive: true });
+
+    // Adaptive Particle Count: Mobile gets 22 particles, Desktop gets up to 90
+    const numParticles = isMobile ? 22 : Math.min(Math.floor(w / 16), 90);
     const particles = [];
     for (let i = 0; i < numParticles; i++) {
       particles.push({
         x: Math.random() * w,
         y: Math.random() * h,
-        vx: (Math.random() - 0.5) * 0.8,
-        vy: (Math.random() - 0.5) * 0.8,
+        vx: (Math.random() - 0.5) * (isMobile ? 0.5 : 0.8),
+        vy: (Math.random() - 0.5) * (isMobile ? 0.5 : 0.8),
         r: Math.random() * 2 + 1,
         color: Math.random() > 0.4 ? '#a855f7' : (Math.random() > 0.5 ? '#ff6ec7' : '#38bdf8'),
         alpha: Math.random() * 0.6 + 0.3
@@ -1144,15 +1153,16 @@
       mouse.x += (mouse.targetX - mouse.x) * 0.08;
       mouse.y += (mouse.targetY - mouse.y) * 0.08;
 
-      // 1. Mouse Spotlight Ambient Glow
+      // 1. Mouse/Touch Spotlight Ambient Glow
       if (mouse.active) {
-        const spotGrad = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, 320);
+        const spotRadius = isMobile ? 200 : 320;
+        const spotGrad = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, spotRadius);
         spotGrad.addColorStop(0, 'rgba(168, 85, 247, 0.22)');
         spotGrad.addColorStop(0.5, 'rgba(255, 110, 199, 0.08)');
         spotGrad.addColorStop(1, 'transparent');
         ctx.fillStyle = spotGrad;
         ctx.beginPath();
-        ctx.arc(mouse.x, mouse.y, 320, 0, Math.PI * 2);
+        ctx.arc(mouse.x, mouse.y, spotRadius, 0, Math.PI * 2);
         ctx.fill();
       }
 
@@ -1164,7 +1174,8 @@
 
       ctx.beginPath();
       ctx.moveTo(0, h * 0.35);
-      for (let x = 0; x <= w; x += 20) {
+      const stepX = isMobile ? 30 : 20;
+      for (let x = 0; x <= w; x += stepX) {
         const y = h * 0.35 + Math.sin(x * 0.002 + step) * 45 + Math.cos(step * 0.5) * 20;
         ctx.lineTo(x, y);
       }
@@ -1175,6 +1186,7 @@
       ctx.fill();
 
       // 3. Draw & Connect Particles (Constellation Mesh)
+      const maxConnectDist = isMobile ? 85 : 110;
       for (let i = 0; i < particles.length; i++) {
         const p1 = particles[i];
         p1.x += p1.vx;
@@ -1183,22 +1195,24 @@
         if (p1.x < 0 || p1.x > w) p1.vx *= -1;
         if (p1.y < 0 || p1.y > h) p1.vy *= -1;
 
-        // Mouse interaction force
+        // Touch/Mouse interaction force
         const dxMouse = mouse.x - p1.x;
         const dyMouse = mouse.y - p1.y;
         const distMouse = Math.sqrt(dxMouse * dxMouse + dyMouse * dyMouse);
-        if (distMouse < 150) {
-          const force = (150 - distMouse) / 150;
-          p1.x -= (dxMouse / distMouse) * force * 2.5;
-          p1.y -= (dyMouse / distMouse) * force * 2.5;
+        if (distMouse < 140) {
+          const force = (140 - distMouse) / 140;
+          p1.x -= (dxMouse / distMouse) * force * 2;
+          p1.y -= (dyMouse / distMouse) * force * 2;
         }
 
         // Draw particle dot
         ctx.beginPath();
         ctx.arc(p1.x, p1.y, p1.r, 0, Math.PI * 2);
         ctx.fillStyle = p1.color;
-        ctx.shadowColor = p1.color;
-        ctx.shadowBlur = 10;
+        if (!isMobile) {
+          ctx.shadowColor = p1.color;
+          ctx.shadowBlur = 10;
+        }
         ctx.fill();
         ctx.shadowBlur = 0;
 
@@ -1209,8 +1223,8 @@
           const dy = p1.y - p2.y;
           const dist = Math.sqrt(dx * dx + dy * dy);
 
-          if (dist < 110) {
-            const lineAlpha = (1 - dist / 110) * 0.28;
+          if (dist < maxConnectDist) {
+            const lineAlpha = (1 - dist / maxConnectDist) * (isMobile ? 0.2 : 0.28);
             ctx.beginPath();
             ctx.moveTo(p1.x, p1.y);
             ctx.lineTo(p2.x, p2.y);
