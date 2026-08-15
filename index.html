@@ -160,7 +160,7 @@
     align-items:center;
     justify-content:center;
     text-align:center;
-    padding-top:80px;
+    padding-top:135px;
     position:relative;
     background: transparent;
   }
@@ -177,8 +177,38 @@
     pointer-events: none;
     z-index: 0;
   }
-  .hero-badges{display:flex;gap:14px;margin-bottom:38px;opacity:0;animation:fadeUp .9s .2s forwards;}
-  .badge{border:1px solid rgba(168,85,247,.45);background:rgba(168,85,247,.1);border-radius:40px;padding:8px 20px;font-size:13px;letter-spacing:3px;text-transform:uppercase;color:#d9b8ff;font-weight:600;}
+  .hero-badges{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    margin-bottom:28px;
+    opacity:0;
+    animation:fadeUp .9s .2s forwards;
+  }
+  .badge{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    border:none;
+    background:transparent;
+    padding:0;
+    font-size:12px;
+    letter-spacing:4px;
+    text-transform:uppercase;
+    color:var(--muted);
+    font-weight:600;
+  }
+  .badge-dot{
+    width:6px;
+    height:6px;
+    border-radius:50%;
+    background:var(--magenta);
+    box-shadow:0 0 8px var(--magenta);
+  }
+  .badge-sep{
+    color:rgba(168,85,247,.4);
+    font-size:12px;
+  }
   .hero-title{font-family:'Orbitron',monospace;font-weight:900;font-size:clamp(64px,11vw,160px);line-height:.95;letter-spacing:-2px;background:linear-gradient(135deg,#fff 0%,#dcb4ff 35%,#a855f7 70%,#6b21c9 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;opacity:0;animation:fadeUp 1s .35s forwards;}
   .hero-year{font-family:'Poppins',sans-serif;font-style:italic;font-weight:600;font-size:clamp(30px,4vw,48px);color:var(--magenta);margin-top:6px;opacity:0;animation:fadeUp 1s .5s forwards;}
   .hero-tag{margin-top:26px;font-size:16px;letter-spacing:5px;text-transform:uppercase;color:var(--ink);font-weight:500;min-height:32px;}
@@ -302,10 +332,25 @@
   #lightbox.open img{transform:scale(1);}
   #lightbox-close{position:absolute;top:30px;right:40px;font-size:14px;letter-spacing:2px;color:#fff;border:1px solid rgba(255,255,255,.3);padding:8px 18px;border-radius:30px;cursor:pointer;background:transparent;font-weight:600;}
 
-  /* Custom cursor */
-  *{cursor:none !important;}
-  #cursor-dot{position:fixed;width:8px;height:8px;background:var(--magenta);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform .1s ease,background .3s ease;box-shadow:0 0 10px var(--magenta);}
-  #cursor-ring{position:fixed;width:36px;height:36px;border:1.5px solid rgba(168,85,247,.7);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .3s ease,height .3s ease;}
+  /* Sleek Purple Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #08050f;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #7c3aed, #a855f7);
+    border-radius: 5px;
+    border: 2px solid #08050f;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #a855f7, #ff6ec7);
+  }
+
+  /* Restore standard mouse cursor */
+  a, button, .frame, .radar-dot, .cta-btn, .swatch, .tool-chip, .c-card, .type-card, .nav-link, .drawer-link { cursor: pointer !important; }
+  #cursor-dot, #cursor-ring { display: none !important; }
 
   /* Floating orbs */
   #orbs-container{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
@@ -421,9 +466,343 @@
   .result-item:last-child{border-right:none;}
   .result-val{font-family:'Orbitron',monospace;font-weight:900;font-size:clamp(20px,3vw,32px);background:linear-gradient(135deg,#fff,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
   .result-key{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-top:4px;font-weight:500;}
+
+  /* GLASSMORTIC TOP NAVBAR */
+  #top-navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 72px;
+    z-index: 1000;
+    background: rgba(8, 5, 15, 0.78);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border-bottom: 1px solid rgba(168, 85, 247, 0.2);
+    transition: all 0.3s ease;
+  }
+
+  .nav-container {
+    max-width: 1280px;
+    height: 100%;
+    margin: 0 auto;
+    padding: 0 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    font-family: 'Orbitron', monospace;
+    font-weight: 900;
+    font-size: 20px;
+    letter-spacing: 2px;
+    color: #fff;
+  }
+
+  .nav-brand-logo {
+    background: linear-gradient(135deg, #fff 0%, #dcb4ff 50%, #a855f7 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .nav-brand-tag {
+    font-size: 11px;
+    color: var(--magenta);
+    background: rgba(255, 110, 199, 0.12);
+    border: 1px solid rgba(255, 110, 199, 0.3);
+    padding: 2px 8px;
+    border-radius: 20px;
+  }
+
+  .nav-links-desktop {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .nav-link {
+    text-decoration: none;
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+    transition: all 0.25s ease;
+    position: relative;
+    padding: 6px 0;
+  }
+
+  .nav-link:hover, .nav-link.active {
+    color: #fff;
+  }
+
+  .nav-link.active::after, .nav-link:hover::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--violet), var(--magenta));
+    border-radius: 2px;
+    box-shadow: 0 0 8px var(--magenta);
+  }
+
+  .nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .nav-cta-btn {
+    text-decoration: none;
+    font-family: 'Orbitron', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #fff;
+    padding: 9px 22px;
+    border-radius: 30px;
+    background: linear-gradient(135deg, rgba(168, 85, 247, 0.25), rgba(255, 110, 199, 0.18));
+    border: 1px solid rgba(168, 85, 247, 0.5);
+    transition: all 0.3s ease;
+  }
+
+  .nav-cta-btn:hover {
+    border-color: var(--magenta);
+    box-shadow: 0 0 16px rgba(255, 110, 199, 0.4);
+    transform: translateY(-1px);
+  }
+
+  #menu-toggle {
+    display: none;
+    background: transparent;
+    border: 1px solid rgba(168, 85, 247, 0.35);
+    border-radius: 8px;
+    cursor: pointer;
+    flex-direction: column;
+    gap: 5px;
+    padding: 8px 10px;
+    z-index: 1001;
+    transition: all 0.25s ease;
+  }
+
+  #menu-toggle:hover {
+    border-color: var(--magenta);
+    background: rgba(168, 85, 247, 0.12);
+  }
+
+  .hamburger-line {
+    width: 22px;
+    height: 2px;
+    background: #fff;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+  }
+
+  /* SLIDING DRAWER MENU */
+  #drawer-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(4, 2, 10, 0.75);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    z-index: 1001;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.35s ease;
+  }
+
+  #drawer-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  #sliding-drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 320px;
+    max-width: 85vw;
+    z-index: 1002;
+    background: rgba(12, 7, 24, 0.96);
+    backdrop-filter: blur(28px);
+    -webkit-backdrop-filter: blur(28px);
+    border-left: 1px solid rgba(168, 85, 247, 0.35);
+    padding: 30px 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transform: translateX(100%);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: -10px 0 40px rgba(0, 0, 0, 0.85);
+  }
+
+  #sliding-drawer.active {
+    transform: translateX(0);
+  }
+
+  .drawer-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(168, 85, 247, 0.2);
+  }
+
+  #drawer-close {
+    background: transparent;
+    border: 1px solid rgba(168, 85, 247, 0.35);
+    color: #fff;
+    font-size: 20px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.25s ease;
+  }
+
+  #drawer-close:hover {
+    border-color: var(--magenta);
+    color: var(--magenta);
+    background: rgba(255, 110, 199, 0.12);
+  }
+
+  .drawer-links {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 20px 0;
+    overflow-y: auto;
+  }
+
+  .drawer-link {
+    text-decoration: none;
+    font-size: 14px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--ink);
+    font-weight: 600;
+    padding: 10px 14px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    transition: all 0.25s ease;
+  }
+
+  .drawer-num {
+    font-family: 'Orbitron', monospace;
+    font-size: 11px;
+    color: var(--magenta);
+    opacity: 0.8;
+  }
+
+  .drawer-link:hover {
+    background: rgba(168, 85, 247, 0.15);
+    color: #fff;
+    padding-left: 18px;
+  }
+
+  .drawer-footer {
+    padding-top: 18px;
+    border-top: 1px solid rgba(168, 85, 247, 0.2);
+  }
+
+  .drawer-designer-name {
+    font-family: 'Orbitron', monospace;
+    font-weight: 700;
+    font-size: 14px;
+    color: #fff;
+  }
+
+  .drawer-designer-role {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  @media (max-width: 1024px) {
+    .nav-links-desktop { display: none; }
+    #menu-toggle { display: flex; }
+    .nav-container { padding: 0 24px; }
+  }
 </style>
 </head>
 <body>
+<!-- GLASSMORTIC TOP NAVBAR -->
+<header id="top-navbar">
+  <div class="nav-container">
+    <a href="#hero" class="nav-brand">
+      <span class="nav-brand-logo">AIRAURA</span>
+      <span class="nav-brand-tag">'25</span>
+    </a>
+
+    <nav class="nav-links-desktop">
+      <a href="#hero" class="nav-link active">Intro</a>
+      <a href="#overview" class="nav-link">Overview</a>
+      <a href="#hero-art" class="nav-link">Posters</a>
+      <a href="#flyer" class="nav-link">Flyer</a>
+      <a href="#brochure" class="nav-link">Brochure</a>
+      <a href="#social" class="nav-link">Social</a>
+      <a href="#modules" class="nav-link">Modules</a>
+      <a href="#about-me" class="nav-link">About</a>
+    </nav>
+
+    <div class="nav-actions">
+      <a href="#contact" class="nav-cta-btn">Connect</a>
+      <button id="menu-toggle" aria-label="Toggle navigation menu">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- SLIDING MOBILE DRAWER MENU -->
+<div id="drawer-overlay"></div>
+<aside id="sliding-drawer">
+  <div class="drawer-header">
+    <a href="#hero" class="nav-brand" onclick="closeDrawer()">
+      <span class="nav-brand-logo">AIRAURA</span>
+      <span class="nav-brand-tag">'25</span>
+    </a>
+    <button id="drawer-close" aria-label="Close menu">&times;</button>
+  </div>
+
+  <nav class="drawer-links">
+    <a href="#hero" class="drawer-link"><span class="drawer-num">01</span> Intro</a>
+    <a href="#overview" class="drawer-link"><span class="drawer-num">02</span> Overview</a>
+    <a href="#hero-art" class="drawer-link"><span class="drawer-num">03</span> Posters</a>
+    <a href="#flyer" class="drawer-link"><span class="drawer-num">04</span> Info Flyer</a>
+    <a href="#brochure" class="drawer-link"><span class="drawer-num">05</span> Brochure</a>
+    <a href="#social" class="drawer-link"><span class="drawer-num">06</span> Social Graphics</a>
+    <a href="#modules" class="drawer-link"><span class="drawer-num">07</span> Modules</a>
+    <a href="#timeline" class="drawer-link"><span class="drawer-num">08</span> Timeline</a>
+    <a href="#print" class="drawer-link"><span class="drawer-num">09</span> Print System</a>
+    <a href="#brand" class="drawer-link"><span class="drawer-num">10</span> Brand Identity</a>
+    <a href="#about-me" class="drawer-link"><span class="drawer-num">11</span> About Designer</a>
+    <a href="#contact" class="drawer-link"><span class="drawer-num">12</span> Connect</a>
+  </nav>
+
+  <div class="drawer-footer">
+    <div class="drawer-designer-name">Faiza Tabassum</div>
+    <div class="drawer-designer-role">Graphic Designer &amp; Editor</div>
+  </div>
+</aside>
+
 <canvas id="cyber-waves-canvas"></canvas>
 <div id="tech-grid"></div>
 <div id="ambient-aurora">
@@ -463,8 +842,9 @@
   <!-- HERO -->
   <section class="hero" id="hero">
     <div class="hero-badges">
-      <span class="badge">Air University</span>
-      <span class="badge">AirAura '25</span>
+      <span class="badge"><span class="badge-dot"></span>Air University</span>
+      <span class="badge-sep">•</span>
+      <span class="badge"><span class="badge-dot"></span>AirAura '25</span>
     </div>
     <h1 class="hero-title">AIRAURA</h1>
     <div class="hero-year">2025</div>
@@ -1239,6 +1619,63 @@
     }
 
     animate();
+  })();
+
+  // Top Navbar Drawer & Active Link Logic
+  (function initNavbarDrawer() {
+    const menuToggle = document.getElementById('menu-toggle');
+    const drawerClose = document.getElementById('drawer-close');
+    const slidingDrawer = document.getElementById('sliding-drawer');
+    const drawerOverlay = document.getElementById('drawer-overlay');
+    const drawerLinks = document.querySelectorAll('.drawer-link');
+    const desktopLinks = document.querySelectorAll('.nav-link');
+
+    function openDrawer() {
+      if (slidingDrawer && drawerOverlay) {
+        slidingDrawer.classList.add('active');
+        drawerOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    function closeDrawer() {
+      if (slidingDrawer && drawerOverlay) {
+        slidingDrawer.classList.remove('active');
+        drawerOverlay.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+    }
+
+    window.closeDrawer = closeDrawer;
+
+    if (menuToggle) menuToggle.addEventListener('click', openDrawer);
+    if (drawerClose) drawerClose.addEventListener('click', closeDrawer);
+    if (drawerOverlay) drawerOverlay.addEventListener('click', closeDrawer);
+
+    drawerLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        closeDrawer();
+      });
+    });
+
+    // Active section observer for top navbar links
+    const sections = document.querySelectorAll('section[id]');
+    window.addEventListener('scroll', () => {
+      let current = '';
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop - 120;
+        if (window.scrollY >= sectionTop) {
+          current = section.getAttribute('id');
+        }
+      });
+
+      desktopLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href') === `#${current}`) {
+          link.classList.add('active');
+        }
+      });
+    });
   })();
 </script>
 </body>
