@@ -1653,13 +1653,11 @@
     if (!src || !lightbox) return;
     lightbox.querySelector('img').src = src;
     lightbox.classList.add('open');
-    document.body.style.overflow = 'hidden';
   }
 
   function closeLightbox() {
     if (!lightbox) return;
     lightbox.classList.remove('open');
-    document.body.style.overflow = '';
   }
 
   document.querySelectorAll('.frame').forEach(frame => {
@@ -1674,6 +1672,8 @@
     lightbox.addEventListener('click', (e) => {
       if (e.target === lightbox || e.target.id === 'lightbox-close') closeLightbox();
     });
+    lightbox.addEventListener('wheel', (e) => { e.preventDefault(); }, { passive: false });
+    lightbox.addEventListener('touchmove', (e) => { e.preventDefault(); }, { passive: false });
     window.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && lightbox.classList.contains('open')) closeLightbox();
     });
@@ -1855,7 +1855,6 @@
       if (slidingDrawer && drawerOverlay) {
         slidingDrawer.classList.add('active');
         drawerOverlay.classList.add('active');
-        document.body.style.overflow = 'hidden';
       }
     }
 
@@ -1863,7 +1862,6 @@
       if (slidingDrawer && drawerOverlay) {
         slidingDrawer.classList.remove('active');
         drawerOverlay.classList.remove('active');
-        document.body.style.overflow = '';
       }
     }
 
