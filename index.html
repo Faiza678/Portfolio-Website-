@@ -424,7 +424,18 @@
   .skill-card-name{font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);text-align:center;line-height:1.3;}
 
   .about-edu{display:flex;align-items:center;gap:18px;background:rgba(168,85,247,.06);border:1px solid rgba(168,85,247,.2);border-radius:16px;padding:22px 26px;margin-top:20px;}
-  .about-edu-icon{font-size:32px;flex-shrink:0;}
+  .about-edu-icon{
+    width:52px;
+    height:52px;
+    border-radius:14px;
+    background:linear-gradient(135deg,rgba(168,85,247,.22),rgba(255,110,199,.15));
+    border:1px solid rgba(168,85,247,.45);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+    box-shadow:0 4px 20px rgba(168,85,247,.25);
+  }
   .about-edu-degree{font-weight:700;font-size:16px;color:#fff;}
   .about-edu-uni{font-size:13px;color:var(--muted);margin-top:2px;}
 
@@ -1301,7 +1312,32 @@
         <!-- Education -->
         <div class="about-skills-title reveal" style="margin-top:24px;">Education</div>
         <div class="about-edu reveal">
-          <div class="about-edu-icon">🎓</div>
+          <div class="about-edu-icon">
+            <svg width="30" height="30" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="gradCap" x1="4" y1="12" x2="44" y2="28" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#FFFFFF"/>
+                  <stop offset="0.3" stop-color="#E9D5FF"/>
+                  <stop offset="0.7" stop-color="#A855F7"/>
+                  <stop offset="1" stop-color="#7C3AED"/>
+                </linearGradient>
+                <linearGradient id="gradGold" x1="0" y1="0" x2="1" y2="1">
+                  <stop stop-color="#FFE066"/>
+                  <stop offset="1" stop-color="#F59E0B"/>
+                </linearGradient>
+                <linearGradient id="gradBase" x1="12" y1="26" x2="36" y2="38" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#A855F7"/>
+                  <stop offset="1" stop-color="#581C87"/>
+                </linearGradient>
+              </defs>
+              <path d="M12 26V35C12 39 17.5 42 24 42C30.5 42 36 39 36 35V26C32.5 28.5 28.5 29.5 24 29.5C19.5 29.5 15.5 28.5 12 26Z" fill="url(#gradBase)" opacity="0.9"/>
+              <path d="M24 6L44 17L24 28L4 17L24 6Z" fill="url(#gradCap)"/>
+              <path d="M24 6.8L42.5 17L24 27.2L5.5 17L24 6.8Z" stroke="#FFFFFF" stroke-width="0.75" stroke-opacity="0.6"/>
+              <circle cx="24" cy="17" r="2.2" fill="url(#gradGold)"/>
+              <path d="M24 17C28 17 38 19 39 25V33" stroke="url(#gradGold)" stroke-width="2.2" stroke-linecap="round"/>
+              <rect x="37" y="32" width="4" height="6" rx="1" fill="url(#gradGold)"/>
+            </svg>
+          </div>
           <div>
             <div class="about-edu-degree">Bachelor of Computer Science</div>
             <div class="about-edu-uni">Air University, Aerospace &amp; Aviation Campus, Kamra</div>
