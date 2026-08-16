@@ -340,11 +340,82 @@
   .footer-credit{font-size:13px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-top:30px;font-weight:500;}
 
   /* lightbox */
-  #lightbox{position:fixed;inset:0;background:rgba(4,2,10,.92);backdrop-filter:blur(6px);z-index:200;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s ease;}
-  #lightbox.open{opacity:1;pointer-events:auto;}
-  #lightbox img{max-width:88vw;max-height:86vh;border-radius:12px;box-shadow:0 40px 100px rgba(0,0,0,.6);transform:scale(.94);transition:transform .3s ease;}
-  #lightbox.open img{transform:scale(1);}
-  #lightbox-close{position:absolute;top:30px;right:40px;font-size:14px;letter-spacing:2px;color:#fff;border:1px solid rgba(255,255,255,.3);padding:8px 18px;border-radius:30px;cursor:pointer;background:transparent;font-weight:600;}
+  #lightbox {
+    position: fixed;
+    inset: 0;
+    background: rgba(4, 2, 10, 0.95);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    z-index: 999999 !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.35s ease;
+  }
+  #lightbox.open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  #lightbox img {
+    max-width: 88vw;
+    max-height: 86vh;
+    border-radius: 14px;
+    border: 1px solid rgba(168, 85, 247, 0.4);
+    box-shadow: 0 30px 100px rgba(0, 0, 0, 0.9), 0 0 40px rgba(168, 85, 247, 0.25);
+    transform: scale(0.94);
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  #lightbox.open img {
+    transform: scale(1);
+  }
+  #lightbox-close {
+    position: fixed;
+    top: 24px;
+    right: 28px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Orbitron', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #fff;
+    background: rgba(168, 85, 247, 0.3);
+    border: 1px solid rgba(168, 85, 247, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 10px 22px;
+    border-radius: 40px;
+    cursor: pointer !important;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.8), 0 0 15px rgba(168, 85, 247, 0.4);
+    z-index: 1000000 !important;
+  }
+  #lightbox-close:hover {
+    background: rgba(255, 110, 199, 0.4);
+    border-color: var(--magenta);
+    box-shadow: 0 0 25px rgba(255, 110, 199, 0.6);
+    transform: scale(1.05);
+  }
+  @media (max-width: 768px) {
+    #lightbox {
+      padding: 16px;
+    }
+    #lightbox-close {
+      top: 16px;
+      right: 16px;
+      padding: 8px 18px;
+      font-size: 11px;
+    }
+    #lightbox img {
+      max-width: 95vw;
+      max-height: 82vh;
+    }
+  }
 
   /* Sleek Purple Custom Scrollbar */
   ::-webkit-scrollbar {
@@ -1578,19 +1649,34 @@
 
   // Lightbox & Frames
   const lightbox = document.getElementById('lightbox');
-  document.querySelectorAll('.frame').forEach(frame=>{
-    frame.addEventListener('click', ()=>{
-      const src = frame.dataset.full;
-      if(!src || !lightbox) return;
-      lightbox.querySelector('img').src = src;
-      lightbox.classList.add('open');
+  function openLightbox(src) {
+    if (!src || !lightbox) return;
+    lightbox.querySelector('img').src = src;
+    lightbox.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox() {
+    if (!lightbox) return;
+    lightbox.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  document.querySelectorAll('.frame').forEach(frame => {
+    frame.addEventListener('click', () => {
+      openLightbox(frame.dataset.full);
     });
   });
 
   if (lightbox) {
     const closeBtn = document.getElementById('lightbox-close');
-    if(closeBtn) closeBtn.addEventListener('click', ()=> lightbox.classList.remove('open'));
-    lightbox.addEventListener('click', (e)=>{ if(e.target===lightbox) lightbox.classList.remove('open'); });
+    if (closeBtn) closeBtn.addEventListener('click', (e) => { e.stopPropagation(); closeLightbox(); });
+    lightbox.addEventListener('click', (e) => {
+      if (e.target === lightbox || e.target.id === 'lightbox-close') closeLightbox();
+    });
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && lightbox.classList.contains('open')) closeLightbox();
+    });
   }
 
   // Typewriter
