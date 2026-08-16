@@ -431,8 +431,49 @@
   /* Contact section */
   #contact{position:relative;padding:140px 0 100px;}
   .contact-intro{max-width:580px;margin:0 auto 70px;text-align:center;}
-  .avail-badge{display:inline-flex;align-items:center;gap:10px;border:1px solid rgba(100,255,160,.35);background:rgba(100,255,160,.07);border-radius:40px;padding:8px 22px;margin-bottom:28px;font-size:13px;letter-spacing:3px;text-transform:uppercase;color:#6effa8;font-weight:600;}
-  .avail-dot{width:8px;height:8px;border-radius:50%;background:#6effa8;}
+  .avail-badge{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    background:transparent;
+    border:none;
+    padding:0;
+    margin-bottom:24px;
+    font-size:13px;
+    letter-spacing:3px;
+    text-transform:uppercase;
+    color:#6effa8;
+    font-weight:600;
+    cursor:default;
+  }
+  .avail-dot-wrapper{
+    position:relative;
+    width:10px;
+    height:10px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .avail-dot{
+    width:8px;
+    height:8px;
+    border-radius:50%;
+    background:#6effa8;
+    box-shadow:0 0 10px #6effa8;
+    z-index:1;
+  }
+  .avail-dot-ring{
+    position:absolute;
+    inset:-4px;
+    border-radius:50%;
+    background:rgba(110,255,168,.4);
+    animation:statusPulse 2s cubic-bezier(0.24,0,0.38,1) infinite;
+  }
+  @keyframes statusPulse{
+    0%{transform:scale(0.6);opacity:0.9;}
+    70%{transform:scale(2.2);opacity:0;}
+    100%{transform:scale(2.2);opacity:0;}
+  }
 
   .contact-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:24px;margin-bottom:56px;}
   .c-card{background:linear-gradient(145deg,rgba(168,85,247,.08),rgba(74,26,128,.06));border:1px solid rgba(168,85,247,.22);border-radius:22px;padding:36px 30px;display:flex;flex-direction:column;align-items:flex-start;gap:14px;text-decoration:none;color:inherit;position:relative;overflow:hidden;}
@@ -1280,7 +1321,10 @@
 
     <div class="contact-intro reveal">
       <div class="avail-badge">
-        <span class="avail-dot"></span>
+        <div class="avail-dot-wrapper">
+          <span class="avail-dot"></span>
+          <span class="avail-dot-ring"></span>
+        </div>
         Available for freelance &amp; collaboration
       </div>
       <p class="subtitle" style="color:var(--muted);">
