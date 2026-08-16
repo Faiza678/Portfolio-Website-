@@ -519,93 +519,6 @@
   .about-edu-degree{font-weight:700;font-size:16px;color:#fff;}
   .about-edu-uni{font-size:13px;color:var(--muted);margin-top:2px;}
 
-  /* Massive Bold CSR Triple Cards */
-  .flyer-showcase-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 70px;
-    align-items: center;
-    margin-top: 50px;
-  }
-  .csr-cards-stack {
-    display: flex;
-    flex-direction: column;
-    gap: 22px;
-    padding-left: 12px;
-  }
-  .csr-clean-card {
-    background: linear-gradient(145deg, rgba(168, 85, 247, 0.08), rgba(74, 26, 128, 0.04));
-    border: 1px solid rgba(168, 85, 247, 0.22);
-    border-radius: 24px;
-    padding: 24px 30px;
-    display: flex;
-    align-items: center;
-    gap: 28px;
-    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-    position: relative;
-    overflow: hidden;
-  }
-  .csr-clean-card:hover {
-    transform: translateY(-4px) translateX(6px);
-    border-color: rgba(255, 110, 199, 0.5);
-    background: linear-gradient(145deg, rgba(168, 85, 247, 0.14), rgba(255, 110, 199, 0.08));
-    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7), 0 0 30px rgba(168, 85, 247, 0.25);
-  }
-  .csr-big-letter {
-    font-family: 'Orbitron', monospace;
-    font-size: clamp(72px, 8vw, 110px);
-    font-weight: 900;
-    line-height: 0.85;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100px;
-    flex-shrink: 0;
-    letter-spacing: -2px;
-  }
-  .letter-gold {
-    color: #ffd166;
-    text-shadow: 0 0 35px rgba(255, 209, 102, 0.6);
-    filter: drop-shadow(0 0 15px rgba(255, 209, 102, 0.4));
-  }
-  .letter-magenta {
-    color: #ff6ec7;
-    text-shadow: 0 0 35px rgba(255, 110, 199, 0.6);
-    filter: drop-shadow(0 0 15px rgba(255, 110, 199, 0.4));
-  }
-  .letter-cyan {
-    color: #38bdf8;
-    text-shadow: 0 0 35px rgba(56, 189, 248, 0.6);
-    filter: drop-shadow(0 0 15px rgba(56, 189, 248, 0.4));
-  }
-  .csr-clean-info {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-  .csr-clean-word {
-    font-family: 'Orbitron', monospace;
-    font-size: 22px;
-    font-weight: 700;
-    letter-spacing: 3px;
-    color: #fff;
-    text-transform: uppercase;
-  }
-  .csr-clean-sub {
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 14px;
-    font-weight: 600;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
-  @media (max-width: 900px) {
-    .flyer-showcase-grid {
-      grid-template-columns: 1fr;
-      gap: 28px;
-    }
-  }
-
   /* Contact section */
   #contact{position:relative;padding:140px 0 100px;}
   .contact-intro{max-width:580px;margin:0 auto 70px;text-align:center;}
@@ -1236,44 +1149,11 @@
       <span class="tool-chip"><span class="tool-chip-dot"></span>Social Ready</span>
       <span class="tool-chip"><span class="tool-chip-dot"></span>Modular Hierarchy</span>
     </div>
-    <div class="flyer-showcase-grid">
-      <!-- Left: Flyer Poster -->
-      <div class="frame reveal" data-full="images/info_flyer.webp" style="width:100%;cursor:pointer;">
-        <img loading="lazy" src="images/info_flyer.webp" alt="Event Info Flyer">
+    <div style="display:flex;justify-content:center;margin-top:44px;">
+      <div class="frame reveal" data-full="images/info_flyer.webp" style="max-width:720px;width:100%;cursor:pointer;">
+        <img loading="lazy" src="images/info_flyer.webp" alt="Info flyer">
         <div class="glare"></div>
         <div class="frame-caption"><b>Modules &amp; CSR Flyer</b><span>Full event breakdown</span></div>
-      </div>
-
-      <!-- Right: Minimal Big CSR Cards -->
-      <div class="csr-cards-stack">
-        
-        <!-- C: Community -->
-        <div class="csr-clean-card reveal">
-          <div class="csr-big-letter letter-gold">C</div>
-          <div class="csr-clean-info">
-            <div class="csr-clean-word">Community</div>
-            <div class="csr-clean-sub">200+ Universities Reach</div>
-          </div>
-        </div>
-
-        <!-- S: Social -->
-        <div class="csr-clean-card reveal">
-          <div class="csr-big-letter letter-magenta">S</div>
-          <div class="csr-clean-info">
-            <div class="csr-clean-word">Social</div>
-            <div class="csr-clean-sub">Youth &amp; Campus Impact</div>
-          </div>
-        </div>
-
-        <!-- R: Responsibility -->
-        <div class="csr-clean-card reveal">
-          <div class="csr-big-letter letter-cyan">R</div>
-          <div class="csr-clean-info">
-            <div class="csr-clean-word">Responsibility</div>
-            <div class="csr-clean-sub">Eco &amp; Educational Outreach</div>
-          </div>
-        </div>
-
       </div>
     </div>
   </section>
